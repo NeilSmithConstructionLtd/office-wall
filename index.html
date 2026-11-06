@@ -170,6 +170,7 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
       <li><a href="https://www.ikea.com/ca/en/cat/room-dividers-46080/f/white-room-dividers-f-colors--10156/" target="_blank" rel="noopener">IKEA Canada</a> — KALLAX shelving and cabinets</li>
       <li><a href="https://vevor.ca/office-room-divider-c_10909/vevor-office-partition-room-divider-102-x-71-3-panel-portable-privacy-screen-p_010485661587" target="_blank" rel="noopener">VEVOR Canada</a> — white panels on wheels</li>
       <li><a href="https://www.staples.ca/products/3178501-en-homcom-6-panel-freestanding-room-divider-white" target="_blank" rel="noopener">Staples Canada</a> — 6-panel folding screen</li>
+      <li><a href="https://www.walmart.ca/en/browse/home/home-decor/room-dividers/10006_20070_30998" target="_blank" rel="noopener">Walmart.ca</a> — two folding screens. Walmart doesn't sell white dividers itself, so these are from Pro Sellers with 4+ star ratings. Check the seller and return policy before ordering.</li>
     </ul>
   </div>
 </section>
@@ -195,6 +196,8 @@ const TYPES={
   shelf:{name:"Shelving (IKEA)",free:true,note:"Two KALLAX shelf units, 1.47 m tall, standing on the floor. 1.1 m open walkway by the office."},
   cabinet:{name:"Cabinets (IKEA)",free:true,note:"KALLAX with 4 white doors plus a narrow KALLAX, 1.47 m tall. Closed, tidy storage on the corner side. 1.1 m open walkway."},
   panels:{name:"Panels on wheels",free:true,note:"VEVOR 3-panel white partition on lockable wheels, 1.85 m tall. About 0.9 m open walkway."},
+  wm6ft:{name:"Wide screen (Walmart)",free:true,note:"Extra-wide double-hinged white folding screen, 6 ft (1.83 m) tall, folded in a tight zigzag. About 1.0 m open walkway."},
+  wmsteel:{name:"Steel screen (Walmart)",free:true,note:"Costway 6-panel white screen with steel frame, about 10 ft long when open, folded to fit. Height not listed by the seller. About 1.3 m open walkway."},
   screen6:{name:"6-panel screen",free:true,note:"HOMCOM 6-panel white folding screen, 1.70 m tall, set in a zigzag. About 1.0 m open walkway."},
   screen:{name:"2 × 4-panel screens",free:true,note:"Two HOMCOM 4-panel white/grey folding screens, 1.71 m tall, set in a zigzag. About 1.0 m open walkway."},
 };
@@ -383,6 +386,8 @@ function buildFree(){
       x+=0.74*Math.cos(angs[i]); z-=0.74*Math.sin(angs[i]);}
     gap=[x,state.len]; lab('Panels on wheels 1.85 m',0.95,2.15);
   }
+  else if(k==="wm6ft"){ zig(10,0.38,1.83,1.02,WH,null); lab('Wide screen 1.83 m',1.0,2.1); }
+  else if(k==="wmsteel"){ zig(6,0.5,1.75,1.0,M(0xf4f4f1),M(0xe2e2de)); lab('Steel-frame screen',1.0,2.0); }
   else if(k==="screen6"){ zig(6,0.4,1.7,0.62,WH,null); lab('6-panel screen 1.70 m',1.0,2.0); }
   else { zig(8,0.4,1.71,0.9,M(0xf2efe8),M(0x9a9ea1)); lab('2 × 4-panel screens 1.71 m',1.1,2.0); }
   // open walkway marker on the floor
@@ -501,6 +506,10 @@ const FREE={
     items:[{n:"KALLAX shelving unit with 4 doors, white, 147 × 147 cm",p:259.00,q:1},{n:"KALLAX shelf unit, white, 42 × 147 cm",p:69.99,q:1}]},
   panels:{t:"Panels on wheels",s:"VEVOR · 3 white panels, 1.85 m tall",store:"VEVOR Canada",url:"https://vevor.ca/office-room-divider-c_10909/vevor-office-partition-room-divider-102-x-71-3-panel-portable-privacy-screen-p_010485661587",
     items:[{n:"VEVOR 3-panel office partition on wheels, white",p:98.99,q:1}]},
+  wm6ft:{t:"Extra-wide folding screen",s:"Walmart.ca · 6 ft tall · ★4.5 (24 reviews)",store:"Walmart.ca (seller: Gilberts Outlet, Pro Seller, fulfilled by Walmart)",short:"Walmart.ca",url:"https://www.walmart.ca/en/ip/Tall-Extra-Wide-Foldable-Panel-Partition-Wall-Divider-Double-Hinged-Room-and-Folding-Privacy-Screens-6-feet-White/4JTDA8G88MNO",
+    items:[{n:"Tall extra-wide double-hinged folding screen, 6 ft, white",p:229.99,q:1}]},
+  wmsteel:{t:"Steel-frame folding screen",s:"Walmart.ca · Costway 6-panel · ★4.1 (10 reviews)",store:"Walmart.ca (seller: Goplus Corp / Costway, Pro Seller)",short:"Walmart.ca",url:"https://www.walmart.ca/en/ip/Costway-6-Panel-Room-Divider-Folding-Privacy-Screen-w-Steel-Frame-Decoration-White/PRD27JWFO9N5N2O",
+    items:[{n:"Costway 6-panel room divider, steel frame, white",p:149.99,q:1}]},
   screen6:{t:"6-panel folding screen",s:"Staples · HOMCOM white, 1.70 m tall",store:"Staples Canada",url:"https://www.staples.ca/products/3178501-en-homcom-6-panel-freestanding-room-divider-white",
     items:[{n:"HOMCOM 6-panel freestanding room divider, white",p:189.99,q:1}]},
   screen:{t:"2 × 4-panel folding screens",s:"Home Depot · HOMCOM white/grey, 1.71 m tall",store:"The Home Depot Canada",url:"https://www.homedepot.ca/product/homcom-5ft-4-panel-folding-room-divider-wall-privacy-screen-panels-white-grey/1001804873",
@@ -568,7 +577,7 @@ function renderCost(){
     src.innerHTML=`Price from <a href="${f.url}" target="_blank" rel="noopener">${f.store}</a>, Nov 6, 2026, before delivery. Does not reach the ceiling.`;
     items.innerHTML=f.items.map(x=>`<li><a href="${f.url}" target="_blank" rel="noopener">${x.n}</a><b class="price">${fmt2(x.q*x.p)}</b><span>${x.q} × ${fmt2(x.p)}</span></li>`).join("");
     document.getElementById('itemsbox').hidden=false;
-    setBar(f.t+', no door',fmt(sub+tax),'incl. GST + PST · '+f.store);
+    setBar(f.t+', no door',fmt(sub+tax),'incl. GST + PST · '+(f.short||f.store));
   }
 }
 
