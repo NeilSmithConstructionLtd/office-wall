@@ -189,8 +189,10 @@ const TYPES={
   drywall:{name:"Build (drywall)",h:"full",color:0xf2f2f0,door:"slab",note:"Built like the existing office wall: steel studs, drywall both sides, same white paint and black base, white door and an interior window with blinds."},
   kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"slab",panels:0.61,note:"8' kit: 3\" fibreglass panels in 2' modules, screwed to the walls at each end. Fits the 8′4″ ceiling with a 4″ (100 mm) gap on top."},
   shelf:{name:"Shelving (IKEA)",free:true,note:"Two KALLAX shelf units, 1.47 m tall, standing on the floor. 1.1 m open walkway by the office."},
-  acoustic:{name:"Acoustic panels",free:true,note:"VEVOR 3-panel fabric divider on wheels, 1.68 m tall. About 1.2 m open walkway by the office."},
-  screen:{name:"Folding screens",free:true,note:"Two HOMCOM 4-panel folding screens, 1.71 m tall, set in a zigzag. About 1.0 m open walkway."},
+  cabinet:{name:"Cabinets (IKEA)",free:true,note:"KALLAX with 4 white doors plus a narrow KALLAX, 1.47 m tall. Closed, tidy storage on the corner side. 1.1 m open walkway."},
+  panels:{name:"Panels on wheels",free:true,note:"VEVOR 3-panel white partition on lockable wheels, 1.85 m tall. About 0.9 m open walkway."},
+  screen6:{name:"6-panel screen",free:true,note:"HOMCOM 6-panel white folding screen, 1.70 m tall, set in a zigzag. About 1.0 m open walkway."},
+  screen:{name:"2 × 4-panel screens",free:true,note:"Two HOMCOM 4-panel white/grey folding screens, 1.71 m tall, set in a zigzag. About 1.0 m open walkway."},
   block:{name:"Block kit",h:2.134,color:0x8e979c,door:"accordion",blocks:true,note:"7' block wall with a 36\" accordion door. 0.41 m (16″) open above at the 8′4″ ceiling."},
 };
 // existing room is fixed from the photos: corner 3.0 m wide x 2.4 m deep, ceiling 8'4" = 2.54 m (measured)
@@ -349,30 +351,37 @@ let doorLeaf=null;
 function buildFree(){
   const H=state.ceil, k=state.type; part.position.set(0,0,state.pos);
   const lab=(t,x,y)=>label(t,x,y,0,part);
-  if(k==="shelf"){
-    const W=M(0xf7f7f4), segs=[[0.03,1.47],[1.5,0.42]]; // 147x147 + 42x147, 39 cm deep
-    segs.forEach(([x0,w])=>{const n=Math.round(w/0.37);
-      box(w,0.04,0.39,W,x0+w/2,1.45,0,part);box(w,0.04,0.39,W,x0+w/2,0.02,0,part);
-      for(let i=0;i<=n;i++)box(0.035,1.47,0.39,W,x0+i*(w/n),0.735,0,part);
-      for(let j=1;j<4;j++)box(w,0.025,0.39,W,x0+w/2,j*1.47/4,0,part);
-      for(let i=0;i<n;i++)for(let j=0;j<4;j++) if((i+j)%3===0) box(w/n-0.06,0.28,0.3,M(0xd9c8a8),x0+(i+0.5)*(w/n),(j+0.5)*1.47/4,0,part);});
-    lab('Shelving 1.47 m tall',0.95,1.75);
-    var gap=[1.92,state.len];
-  } else if(k==="acoustic"){
-    const F=M(0xb7c9a8,{roughness:1}), fr=M(0x9aa0a3,{metalness:0.4,roughness:0.5});
-    for(let i=0;i<3;i++){const x=0.05+i*0.61+0.305;
-      box(0.6,1.6,0.05,F,x,0.88,0,part); box(0.61,0.02,0.055,fr,x,1.68,0,part);
-      box(0.05,0.04,0.343,fr,x-0.2,0.06,0,part); box(0.05,0.04,0.343,fr,x+0.2,0.06,0,part);}
-    lab('Acoustic panels 1.68 m tall',0.95,1.95);
-    var gap=[1.88,state.len];
-  } else {
-    const S=M(0xf2efe8), fr=M(0x7b7f82);
-    const pts=[]; let x=0.05; for(let i=0;i<8;i++){pts.push(x); x+=0.4*Math.cos(0.9);}
-    for(let i=0;i<8;i++){const p=new THREE.Group(); p.position.set(pts[i],0,0); p.rotation.y=(i%2?1:-1)*0.9; part.add(p);
-      box(0.4,1.6,0.025,S,0.2,0.93,0,p); box(0.405,0.03,0.03,fr,0.2,1.72,0,p); box(0.02,1.72,0.03,fr,0.01,0.86,0,p);}
-    lab('Folding screens 1.71 m tall',1.1,2.0);
-    var gap=[pts[7]+0.4*Math.cos(0.9),state.len];
+  const WH=M(0xf7f7f4), WH2=M(0xeeeeea), MET=M(0xc9ccce,{metalness:0.4,roughness:0.5}); let gap;
+  const kallax=(doors)=>{
+    [[0.03,1.47],[1.5,0.42]].forEach(([x0,w],u)=>{const n=Math.round(w/0.37);
+      box(w,0.04,0.39,WH,x0+w/2,1.45,0,part);box(w,0.04,0.39,WH,x0+w/2,0.02,0,part);
+      for(let i=0;i<=n;i++)box(0.035,1.47,0.39,WH,x0+i*(w/n),0.735,0,part);
+      for(let j=1;j<4;j++)box(w,0.025,0.39,WH,x0+w/2,j*1.47/4,0,part);
+      if(doors&&u===0) [[0,0],[1,1],[2,0],[3,1],[0,2],[3,3],[1,3],[2,2]].slice(0,4).forEach(([i,j])=>{
+        [-1,1].forEach(sd=>{box(w/n-0.02,1.47/4-0.02,0.018,WH2,x0+(i+0.5)*(w/n),(j+0.5)*1.47/4,sd*0.19,part);
+          box(0.012,0.08,0.02,MET,x0+(i+0.5)*(w/n)+w/n/2-0.05,(j+0.5)*1.47/4,sd*0.205,part);});});
+    });
+    gap=[1.92,state.len];
+  };
+  const zig=(n,pw,ph,ang,mat,frame)=>{let x=0.05,z=-pw*Math.sin(ang)/2;
+    for(let i=0;i<n;i++){const ry=(i%2?1:-1)*ang,p=new THREE.Group();p.position.set(x,0,z);p.rotation.y=ry;part.add(p);
+      box(pw,ph-0.06,0.025,mat,pw/2,ph/2+0.02,0,p);if(frame){box(pw,0.03,0.03,frame,pw/2,ph,0,p);box(0.02,ph,0.03,frame,0.01,ph/2,0,p);}
+      x+=pw*Math.cos(ry); z-=pw*Math.sin(ry);}
+    gap=[x,state.len];};
+  if(k==="shelf"){ kallax(false); lab('Shelving 1.47 m tall',0.95,1.75); }
+  else if(k==="cabinet"){ kallax(true); lab('Cabinets 1.47 m tall',0.95,1.75); }
+  else if(k==="panels"){
+    // 3 white panels 0.74 m wide, 1.85 m tall, slight fold, wheeled feet
+    let x=0.05,z=0; const angs=[-0.35,0.35,-0.35];
+    for(let i=0;i<3;i++){const p=new THREE.Group();p.position.set(x,0,z);p.rotation.y=angs[i];part.add(p);
+      box(0.72,1.62,0.04,WH,0.37,1.0,0,p);box(0.74,0.03,0.05,MET,0.37,1.83,0,p);
+      box(0.03,1.83,0.05,MET,0.015,0.92,0,p);box(0.03,1.83,0.05,MET,0.725,0.92,0,p);
+      box(0.06,0.05,0.36,MET,0.12,0.06,0,p);box(0.06,0.05,0.36,MET,0.62,0.06,0,p);
+      x+=0.74*Math.cos(angs[i]); z-=0.74*Math.sin(angs[i]);}
+    gap=[x,state.len]; lab('Panels on wheels 1.85 m',0.95,2.15);
   }
+  else if(k==="screen6"){ zig(6,0.4,1.7,0.62,WH,null); lab('6-panel screen 1.70 m',1.0,2.0); }
+  else { zig(8,0.4,1.71,0.9,M(0xf2efe8),M(0x9a9ea1)); lab('2 × 4-panel screens 1.71 m',1.1,2.0); }
   // open walkway marker on the floor
   box(gap[1]-gap[0],0.006,0.5,M(0xd9620f,{transparent:true,opacity:0.35}),(gap[0]+gap[1])/2,0.004,0,part);
   label(`Open ${(gap[1]-gap[0]).toFixed(2)} m`,(gap[0]+gap[1])/2,0.5,0,part);
@@ -484,12 +493,16 @@ const WALLS={
   block:{t:"Block kit",s:"EverBlock, accordion door, from US$921"},
 };
 const FREE={
-  shelf:{t:"Shelving units",s:"IKEA · KALLAX, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/kallax-shelving-units-58285/",
+  shelf:{t:"Open shelving",s:"IKEA · KALLAX white, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/kallax-shelving-units-58285/",
     items:[{n:"KALLAX shelf unit, white, 147 × 147 cm",p:179.00,q:1},{n:"KALLAX shelf unit, white, 42 × 147 cm",p:69.99,q:1}]},
-  acoustic:{t:"Acoustic fabric panels",s:"VEVOR · 3 panels on wheels, 1.68 m tall",store:"VEVOR Canada",url:"https://vevor.ca/acoustic-room-divider-c_11534/vevor-room-divider-72-x-66-inch-office-partition-cubicle-privacy-panel-green-p_010982365503",
-    items:[{n:"VEVOR acoustic divider 72″ × 66″, 3-pack, green",p:363.99,q:1}]},
-  screen:{t:"Folding screens",s:"Home Depot · 2 × HOMCOM 4-panel, 1.71 m tall",store:"The Home Depot Canada",url:"https://www.homedepot.ca/product/homcom-5ft-4-panel-folding-room-divider-wall-privacy-screen-panels-white-grey/1001804873",
-    items:[{n:"HOMCOM 4-panel folding room divider, white/grey",p:141.00,q:2}]},
+  cabinet:{t:"Cabinets with doors",s:"IKEA · KALLAX white with 4 doors, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/room-dividers-46080/f/white-room-dividers-f-colors--10156/",
+    items:[{n:"KALLAX shelving unit with 4 doors, white, 147 × 147 cm",p:259.00,q:1},{n:"KALLAX shelf unit, white, 42 × 147 cm",p:69.99,q:1}]},
+  panels:{t:"Panels on wheels",s:"VEVOR · 3 white panels, 1.85 m tall",store:"VEVOR Canada",url:"https://vevor.ca/office-room-divider-c_10909/vevor-office-partition-room-divider-102-x-71-3-panel-portable-privacy-screen-p_010485661587",
+    items:[{n:"VEVOR 3-panel office partition on wheels, white",p:98.99,q:1}]},
+  screen6:{t:"6-panel folding screen",s:"Staples · HOMCOM white, 1.70 m tall",store:"Staples Canada",url:"https://www.staples.ca/products/3178501-en-homcom-6-panel-freestanding-room-divider-white",
+    items:[{n:"HOMCOM 6-panel freestanding room divider, white",p:189.99,q:1}]},
+  screen:{t:"2 × 4-panel folding screens",s:"Home Depot · HOMCOM white/grey, 1.71 m tall",store:"The Home Depot Canada",url:"https://www.homedepot.ca/product/homcom-5ft-4-panel-folding-room-divider-wall-privacy-screen-panels-white-grey/1001804873",
+    items:[{n:"HOMCOM 4-panel folding room divider, white/grey",p:141.00,q:2}]}
 };
 const TAX=0.12;
 let cost={door:"hollow",lever:"passage",ins:true,base:false};
