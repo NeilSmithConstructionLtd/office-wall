@@ -77,7 +77,7 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
 
 <header class="top">
   <h1>NSC office wall</h1>
-  <p>3.0 m × 2.5 m wall with one door · back corner</p>
+  <p>3.0 m wall with one door · ceiling 8′4″ (2.54 m)</p>
 </header>
 
 <main>
@@ -144,13 +144,13 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
       <li><b>Landlord OK.</b> A fixed wall in the leased unit needs the landlord's approval and may need a City of Richmond permit.</li>
       <li><b>Sprinkler, air, light.</b> Check the closed-off corner still has a sprinkler head, supply air and a light switch.</li>
       <li><b>Window end.</b> The wall meets a window mullion; we use a filler strip and seal, no drilling into the glass.</li>
-      <li><b>Ceiling.</b> Measure the T-bar height at both ends. The 8′ kit needs at least 2.49 m.</li>
+      <li><b>Ceiling.</b> Measured at 8′4″ (2.54 m). The 8′ ready-made kit fits with 4″ to spare.</li>
     </ul>
   </div>
   <div class="card">
     <h2>How the cost is worked out</h2>
     <ul class="plain">
-      <li>Wall 3.0 m long × 2.5 m high (to the T-bar), 3-5/8″ steel studs at 16″ centres, 1/2″ drywall both sides.</li>
+      <li>Wall 3.0 m long × 8′4″ (2.54 m) high, to the T-bar ceiling, 3-5/8″ steel studs at 16″ centres, 1/2″ drywall both sides.</li>
       <li>Prices from <b>The Home Depot Canada</b> (homedepot.ca), checked Nov 6, 2026. Tax is GST 5% + PST 7%.</li>
       <li>Ready-made kits are priced from the makers' websites in US dollars, shipping to Canada extra.</li>
       <li>Materials only. Our own crew installs. Glass for the interior window comes from a local glass shop and needs a quote.</li>
@@ -179,11 +179,11 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
 (function(){
 const TYPES={
   drywall:{name:"Build (drywall)",h:"full",color:0xf2f2f0,door:"slab",note:"Built like the existing office wall: steel studs, drywall both sides, same white paint and black base, white door and an interior window with blinds."},
-  kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"slab",panels:0.61,note:"8' kit: 3\" fibreglass panels in 2' modules, screwed to the walls at each end. Small gap under the ceiling."},
-  block:{name:"Block kit",h:2.134,color:0x8e979c,door:"accordion",blocks:true,note:"7' block wall with a 36\" accordion door. 0.37 m open above at a 2.5 m ceiling."},
+  kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"slab",panels:0.61,note:"8' kit: 3\" fibreglass panels in 2' modules, screwed to the walls at each end. Fits the 8′4″ ceiling with a 4″ (100 mm) gap on top."},
+  block:{name:"Block kit",h:2.134,color:0x8e979c,door:"accordion",blocks:true,note:"7' block wall with a 36\" accordion door. 0.41 m (16″) open above at the 8′4″ ceiling."},
 };
-// existing room is fixed from the photos: corner 3.0 m wide x 2.4 m deep, ceiling 2.5 m
-let state={type:"drywall",len:3,pos:2.4,door:0.78,ceil:2.5,open:false,win:true};
+// existing room is fixed from the photos: corner 3.0 m wide x 2.4 m deep, ceiling 8'4" = 2.54 m (measured)
+let state={type:"drywall",len:3,pos:2.4,door:0.78,ceil:2.54,open:false,win:true};
 const RW=6.6, RL=10; // main room width and length (estimated)
 const DW=0.915, DH=2.03, T=0.12; // same thickness as existing walls
 
