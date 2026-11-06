@@ -83,7 +83,7 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
 
 <header class="top">
   <h1>NSC office wall</h1>
-  <p>3.0 m wall with one door · ceiling 8′4″ (2.54 m)</p>
+  <p>Back corner · 3.0 m wide · ceiling 8′4″ (2.54 m)</p>
 </header>
 
 <main>
@@ -101,11 +101,11 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
     </div>
     <div class="card">
       <div class="label">Wall</div>
-      <div class="seg" id="types"></div>
+      <div class="seg wrap" id="types"></div>
       <p class="note" id="tnote"></p>
-      <label for="door" class="label">Door position</label>
+      <label for="door" class="label" id="doorlbl">Door position</label>
       <input id="door" type="range" min="0" max="1" step="0.01" value="0.78">
-      <div class="seg">
+      <div class="seg" id="doorctl">
         <button id="swing" type="button" aria-pressed="false">Open door</button>
         <button id="win" type="button" aria-pressed="true">Window: on</button>
       </div>
@@ -188,6 +188,9 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
 const TYPES={
   drywall:{name:"Build (drywall)",h:"full",color:0xf2f2f0,door:"slab",note:"Built like the existing office wall: steel studs, drywall both sides, same white paint and black base, white door and an interior window with blinds."},
   kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"slab",panels:0.61,note:"8' kit: 3\" fibreglass panels in 2' modules, screwed to the walls at each end. Fits the 8′4″ ceiling with a 4″ (100 mm) gap on top."},
+  shelf:{name:"Shelving (IKEA)",free:true,note:"Two KALLAX shelf units, 1.47 m tall, standing on the floor. 1.1 m open walkway by the office."},
+  acoustic:{name:"Acoustic panels",free:true,note:"VEVOR 3-panel fabric divider on wheels, 1.68 m tall. About 1.2 m open walkway by the office."},
+  screen:{name:"Folding screens",free:true,note:"Two HOMCOM 4-panel folding screens, 1.71 m tall, set in a zigzag. About 1.0 m open walkway."},
   block:{name:"Block kit",h:2.134,color:0x8e979c,door:"accordion",blocks:true,note:"7' block wall with a 36\" accordion door. 0.41 m (16″) open above at the 8′4″ ceiling."},
 };
 // existing room is fixed from the photos: corner 3.0 m wide x 2.4 m deep, ceiling 8'4" = 2.54 m (measured)
@@ -343,8 +346,41 @@ function label(text,x,y,z,parent){
 // partition
 const part=new THREE.Group(); scene.add(part);
 let doorLeaf=null;
+function buildFree(){
+  const H=state.ceil, k=state.type; part.position.set(0,0,state.pos);
+  const lab=(t,x,y)=>label(t,x,y,0,part);
+  if(k==="shelf"){
+    const W=M(0xf7f7f4), segs=[[0.03,1.47],[1.5,0.42]]; // 147x147 + 42x147, 39 cm deep
+    segs.forEach(([x0,w])=>{const n=Math.round(w/0.37);
+      box(w,0.04,0.39,W,x0+w/2,1.45,0,part);box(w,0.04,0.39,W,x0+w/2,0.02,0,part);
+      for(let i=0;i<=n;i++)box(0.035,1.47,0.39,W,x0+i*(w/n),0.735,0,part);
+      for(let j=1;j<4;j++)box(w,0.025,0.39,W,x0+w/2,j*1.47/4,0,part);
+      for(let i=0;i<n;i++)for(let j=0;j<4;j++) if((i+j)%3===0) box(w/n-0.06,0.28,0.3,M(0xd9c8a8),x0+(i+0.5)*(w/n),(j+0.5)*1.47/4,0,part);});
+    lab('Shelving 1.47 m tall',0.95,1.75);
+    var gap=[1.92,state.len];
+  } else if(k==="acoustic"){
+    const F=M(0xb7c9a8,{roughness:1}), fr=M(0x9aa0a3,{metalness:0.4,roughness:0.5});
+    for(let i=0;i<3;i++){const x=0.05+i*0.61+0.305;
+      box(0.6,1.6,0.05,F,x,0.88,0,part); box(0.61,0.02,0.055,fr,x,1.68,0,part);
+      box(0.05,0.04,0.343,fr,x-0.2,0.06,0,part); box(0.05,0.04,0.343,fr,x+0.2,0.06,0,part);}
+    lab('Acoustic panels 1.68 m tall',0.95,1.95);
+    var gap=[1.88,state.len];
+  } else {
+    const S=M(0xf2efe8), fr=M(0x7b7f82);
+    const pts=[]; let x=0.05; for(let i=0;i<8;i++){pts.push(x); x+=0.4*Math.cos(0.9);}
+    for(let i=0;i<8;i++){const p=new THREE.Group(); p.position.set(pts[i],0,0); p.rotation.y=(i%2?1:-1)*0.9; part.add(p);
+      box(0.4,1.6,0.025,S,0.2,0.93,0,p); box(0.405,0.03,0.03,fr,0.2,1.72,0,p); box(0.02,1.72,0.03,fr,0.01,0.86,0,p);}
+    lab('Folding screens 1.71 m tall',1.1,2.0);
+    var gap=[pts[7]+0.4*Math.cos(0.9),state.len];
+  }
+  // open walkway marker on the floor
+  box(gap[1]-gap[0],0.006,0.5,M(0xd9620f,{transparent:true,opacity:0.35}),(gap[0]+gap[1])/2,0.004,0,part);
+  label(`Open ${(gap[1]-gap[0]).toFixed(2)} m`,(gap[0]+gap[1])/2,0.5,0,part);
+  updateSpec(0,0,0);
+}
 function buildWall(){
   part.clear(); doorLeaf=null;
+  if(TYPES[state.type].free){buildFree();return;}
   const t=TYPES[state.type], L=state.len+0.03, H=state.ceil;
   const wh=t.h==="full"?H:Math.min(t.h,H-0.01);
   const x0=-0.03; // starts at the window line, ends flush on the office wall face
@@ -447,6 +483,14 @@ const WALLS={
   kit:{t:"Ready-made kit",s:"Diyversify 10′ × 8′, swing door, US$3,649"},
   block:{t:"Block kit",s:"EverBlock, accordion door, from US$921"},
 };
+const FREE={
+  shelf:{t:"Shelving units",s:"IKEA · KALLAX, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/kallax-shelving-units-58285/",
+    items:[{n:"KALLAX shelf unit, white, 147 × 147 cm",p:179.00,q:1},{n:"KALLAX shelf unit, white, 42 × 147 cm",p:69.99,q:1}]},
+  acoustic:{t:"Acoustic fabric panels",s:"VEVOR · 3 panels on wheels, 1.68 m tall",store:"VEVOR Canada",url:"https://vevor.ca/acoustic-room-divider-c_11534/vevor-room-divider-72-x-66-inch-office-partition-cubicle-privacy-panel-green-p_010982365503",
+    items:[{n:"VEVOR acoustic divider 72″ × 66″, 3-pack, green",p:363.99,q:1}]},
+  screen:{t:"Folding screens",s:"Home Depot · 2 × HOMCOM 4-panel, 1.71 m tall",store:"The Home Depot Canada",url:"https://www.homedepot.ca/product/homcom-5ft-4-panel-folding-room-divider-wall-privacy-screen-panels-white-grey/1001804873",
+    items:[{n:"HOMCOM 4-panel folding room divider, white/grey",p:141.00,q:2}]},
+};
 const TAX=0.12;
 let cost={door:"hollow",lever:"passage",ins:true,base:false};
 state.doorKind=cost.door;
@@ -471,7 +515,10 @@ function setBar(l,t,sub){document.getElementById('cb-label').textContent=l;docum
 function renderCost(){
   // wall cards
   const wo=document.getElementById('wallopt'); wo.innerHTML="";
-  Object.entries(WALLS).forEach(([k,v])=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',state.type===k);
+  const head=t=>{const d=document.createElement('div');d.className='note';d.style.marginTop='4px';d.textContent=t;wo.appendChild(d);};
+  head('Full wall with a door (installed)');
+  const ALL=Object.assign({},WALLS,FREE);
+  Object.entries(ALL).forEach(([k,v])=>{if(k==='shelf')head('Freestanding, no door, open walkway (no install)');const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',state.type===k);
     b.innerHTML=`<span><b>${v.t}</b><small>${v.s}</small></span>`;b.className='opt';
     b.onclick=()=>{state.type=k;syncAll();buildWall();};wo.appendChild(b);});
   document.getElementById('buildopts').hidden=state.type!=="drywall";
@@ -498,6 +545,14 @@ function renderCost(){
     rows.innerHTML=`<span>Kit 10′ wide × 8′ high</span><span>US$3,649</span><span>Shipping to Canada</span><span>quote</span><span>7′ high version</span><span>US$3,149</span>`;
     src.innerHTML=`Price from <a href="https://diyversify.com/products/mounted-straight-partition-wall-with-swing-door" target="_blank" rel="noopener">Diyversify</a>, before tax and shipping. No window option.`;
     document.getElementById('itemsbox').hidden=true;
+  } else if(FREE[state.type]){
+    const f=FREE[state.type], sub=f.items.reduce((a,x)=>a+x.q*x.p,0), tax=sub*TAX;
+    document.getElementById('t-total').textContent=fmt(sub+tax);
+    rows.innerHTML=`<span>Items</span><span>${fmt2(sub)}</span><span>GST + PST 12%</span><span>${fmt2(tax)}</span><span>Installation</span><span>none</span>`;
+    src.innerHTML=`Price from <a href="${f.url}" target="_blank" rel="noopener">${f.store}</a>, Nov 6, 2026, before delivery. Does not reach the ceiling.`;
+    items.innerHTML=f.items.map(x=>`<li><a href="${f.url}" target="_blank" rel="noopener">${x.n}</a><b class="price">${fmt2(x.q*x.p)}</b><span>${x.q} × ${fmt2(x.p)}</span></li>`).join("");
+    document.getElementById('itemsbox').hidden=false;
+    setBar(f.t+', no door',fmt(sub+tax),'incl. GST + PST · '+f.store);
   } else {
     document.getElementById('t-total').textContent="from US$921";
     setBar('Block kit (EverBlock)','from US$921','6′ × 7′ kit · tax and shipping extra');
@@ -513,6 +568,8 @@ Object.entries(TYPES).forEach(([k,v])=>{const b=document.createElement('button')
 function syncAll(){
   Object.keys(TYPES).forEach(k=>document.getElementById('t-'+k).setAttribute('aria-pressed',state.type===k));
   const s=document.getElementById('swing');s.setAttribute('aria-pressed',state.open);s.textContent=state.open?'Close door':'Open door';
+  const free=!!(TYPES[state.type]&&TYPES[state.type].free);
+  document.getElementById('door').hidden=free;document.getElementById('doorlbl').hidden=free;s.hidden=free;
   const w=document.getElementById('win');w.hidden=state.type!=="drywall";w.setAttribute('aria-pressed',state.win);w.textContent='Window: '+(state.win?'on':'off');
   renderCost();
 }
