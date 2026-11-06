@@ -24,7 +24,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px}
 .top h1{margin:0;font-size:1.05rem;font-weight:800;letter-spacing:-.01em}
 .top p{margin:0;font-size:.78rem;color:var(--muted);font-family:var(--mono)}
-main{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px calc(140px + env(safe-area-inset-bottom,0px))}
+main{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px var(--footer-h,140px)}
 section{display:grid;gap:14px}
 h2{font-size:1.1rem;margin:0}
 .viewer{position:relative;background:var(--view);border:1px solid var(--line);border-radius:8px;overflow:hidden;height:min(58vh,520px);max-width:100%}
@@ -63,16 +63,16 @@ details[open] summary::after{content:"−"}
 .ext{display:grid;gap:6px;font-size:.88rem}
 ul.plain{margin:0;padding-left:18px;display:grid;gap:8px;font-size:.88rem}
 a{color:var(--accent)}
-/* always-visible total above the tab bar */
-.costbar{position:fixed;left:0;right:0;bottom:calc(61px + env(safe-area-inset-bottom,0px));z-index:6;background:var(--ink);color:var(--bg);text-decoration:none;
-  display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:9px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.costbar small{display:block;font-family:var(--mono);font-size:.7rem;opacity:.75}
-.costbar b{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
-/* tab bar */
-nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--panel);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);
+/* bottom panel: one fixed block holding the cost line and the tabs, so they never overlap */
+.bottom{position:fixed;left:0;right:0;bottom:0;z-index:6;display:flex;flex-direction:column;background:var(--panel);border-top:1px solid var(--line);box-shadow:0 -4px 14px rgba(0,0,0,.06)}
+.costbar{display:flex;justify-content:space-between;align-items:center;gap:10px;min-height:40px;box-sizing:border-box;padding:7px 14px;text-decoration:none;border-radius:10px;
+  background:var(--ink);color:var(--bg);margin:8px max(12px,env(safe-area-inset-right,0px)) 2px max(12px,env(safe-area-inset-left,0px))}
+.costbar .cbl{min-width:0;font-size:.8rem;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.costbar small{font-family:var(--mono);font-size:.68rem;opacity:.75}
+.costbar b{font-size:1.15rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+nav.tabs{display:grid;grid-template-columns:repeat(3,1fr);
   padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs a{display:grid;place-items:center;align-content:center;gap:2px;height:60px;box-sizing:border-box;padding:0 4px;color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:600}
+nav.tabs a{display:grid;place-items:center;align-content:center;gap:2px;height:54px;box-sizing:border-box;padding:0 4px;color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:600}
 nav.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
 nav.tabs a[aria-current=page]{color:var(--accent)}
 @media (min-width:900px){main{max-width:1000px}.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}}
@@ -175,13 +175,15 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
 </section>
 </main>
 
-<a class="costbar" href="#cost" id="costbar"><span><span id="cb-label">Material total</span><small id="cb-sub"></small></span><b id="cb-total">$0</b></a>
+<div class="bottom" id="bottom">
+<a class="costbar" href="#cost" id="costbar"><span class="cbl"><span id="cb-label">Material total</span><br><small id="cb-sub"></small></span><b id="cb-total">$0</b></a>
 
 <nav class="tabs" aria-label="Sections">
   <a href="#model" data-tab="model"><svg viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>3D</a>
   <a href="#cost" data-tab="cost"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>Cost</a>
   <a href="#notes" data-tab="notes"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/></svg>Notes</a>
 </nav>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -615,6 +617,8 @@ function showTab(){
   window.scrollTo(0,0);
 }
 addEventListener('hashchange',showTab);
+const bottomEl=document.getElementById('bottom');
+new ResizeObserver(()=>document.documentElement.style.setProperty('--footer-h',(bottomEl.offsetHeight+28)+'px')).observe(bottomEl);
 
 bg();buildRoom();syncAll();buildWall();view('p');showTab();resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
