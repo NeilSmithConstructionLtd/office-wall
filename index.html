@@ -24,7 +24,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px}
 .top h1{margin:0;font-size:1.05rem;font-weight:800;letter-spacing:-.01em}
 .top p{margin:0;font-size:.78rem;color:var(--muted);font-family:var(--mono)}
-main{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px calc(84px + env(safe-area-inset-bottom,0px))}
+main{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px calc(140px + env(safe-area-inset-bottom,0px))}
 section{display:grid;gap:14px}
 h2{font-size:1.1rem;margin:0}
 .viewer{position:relative;background:var(--view);border:1px solid var(--line);border-radius:8px;overflow:hidden;height:min(58vh,520px);max-width:100%}
@@ -63,10 +63,16 @@ details[open] summary::after{content:"−"}
 .ext{display:grid;gap:6px;font-size:.88rem}
 ul.plain{margin:0;padding-left:18px;display:grid;gap:8px;font-size:.88rem}
 a{color:var(--accent)}
+/* always-visible total above the tab bar */
+.costbar{position:fixed;left:0;right:0;bottom:calc(61px + env(safe-area-inset-bottom,0px));z-index:6;background:var(--ink);color:var(--bg);text-decoration:none;
+  display:flex;justify-content:space-between;align-items:center;gap:10px;padding-block:9px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.costbar small{display:block;font-family:var(--mono);font-size:.7rem;opacity:.75}
+.costbar b{font-size:1.25rem;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* tab bar */
 nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--panel);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);
   padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
-nav.tabs a{display:grid;place-items:center;gap:2px;padding:9px 4px 10px;color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:600}
+nav.tabs a{display:grid;place-items:center;align-content:center;gap:2px;height:60px;box-sizing:border-box;padding:0 4px;color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:600}
 nav.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
 nav.tabs a[aria-current=page]{color:var(--accent)}
 @media (min-width:900px){main{max-width:1000px}.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}}
@@ -166,6 +172,8 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
   </div>
 </section>
 </main>
+
+<a class="costbar" href="#cost" id="costbar"><span><span id="cb-label">Material total</span><small id="cb-sub"></small></span><b id="cb-total">$0</b></a>
 
 <nav class="tabs" aria-label="Sections">
   <a href="#model" data-tab="model"><svg viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>3D</a>
@@ -459,6 +467,7 @@ function lines(){
   if(cost.base) add("base",1);
   return L;
 }
+function setBar(l,t,sub){document.getElementById('cb-label').textContent=l;document.getElementById('cb-total').textContent=t;document.getElementById('cb-sub').textContent=sub;}
 function renderCost(){
   // wall cards
   const wo=document.getElementById('wallopt'); wo.innerHTML="";
@@ -482,13 +491,16 @@ function renderCost(){
     src.innerHTML=`Prices from <b>The Home Depot Canada</b>, Nov 6, 2026. Materials only, our crew installs.`;
     items.innerHTML=L.map(x=>`<li><a href="${x.u}" target="_blank" rel="noopener">${x.n}</a><b class="price">${fmt2(x.q*x.p)}</b><span>${x.q} × ${fmt2(x.p)}</span></li>`).join("");
     document.getElementById('itemsbox').hidden=false;
+    setBar('Material total, build it ourselves',fmt(sub+tax),'incl. GST + PST · Home Depot Canada'+(state.win?' · glass extra':''));
   } else if(state.type==="kit"){
     document.getElementById('t-total').textContent="US$3,649";
+    setBar('Ready-made kit (Diyversify)','US$3,649','10′ × 8′ kit · tax and shipping extra');
     rows.innerHTML=`<span>Kit 10′ wide × 8′ high</span><span>US$3,649</span><span>Shipping to Canada</span><span>quote</span><span>7′ high version</span><span>US$3,149</span>`;
     src.innerHTML=`Price from <a href="https://diyversify.com/products/mounted-straight-partition-wall-with-swing-door" target="_blank" rel="noopener">Diyversify</a>, before tax and shipping. No window option.`;
     document.getElementById('itemsbox').hidden=true;
   } else {
     document.getElementById('t-total').textContent="from US$921";
+    setBar('Block kit (EverBlock)','from US$921','6′ × 7′ kit · tax and shipping extra');
     rows.innerHTML=`<span>Kit 6′ wide × 7′ high</span><span>US$921</span><span>10′ wide kit</span><span>quote</span>`;
     src.innerHTML=`Price from <a href="https://stemfinity.com/collections/all-store/products/everblock-wall-kit-with-door-6-x-7" target="_blank" rel="noopener">EverBlock via Stemfinity</a>, before tax and shipping. Leaves a gap under the ceiling.`;
     document.getElementById('itemsbox').hidden=true;
