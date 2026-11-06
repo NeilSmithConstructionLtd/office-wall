@@ -158,16 +158,18 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
     <ul class="plain">
       <li>Wall 3.0 m long × 8′4″ (2.54 m) high, to the T-bar ceiling, 3-5/8″ steel studs at 16″ centres, 1/2″ drywall both sides.</li>
       <li>Prices from <b>The Home Depot Canada</b> (homedepot.ca), checked Nov 6, 2026. Tax is GST 5% + PST 7%.</li>
-      <li>Ready-made kits are priced from the makers' websites in US dollars, shipping to Canada extra.</li>
+      <li>All prices are in Canadian dollars from Canadian store websites. GST 5% + PST 7% added. Delivery is extra.</li>
       <li>Materials only. Our own crew installs. Glass for the interior window comes from a local glass shop and needs a quote.</li>
     </ul>
   </div>
   <div class="card">
     <h2>Suppliers</h2>
     <ul class="plain">
-      <li><a href="https://www.homedepot.ca" target="_blank" rel="noopener">The Home Depot Canada</a> — drywall, studs, door, handle, paint, insulation, trim, blinds</li>
-      <li><a href="https://diyversify.com/products/mounted-straight-partition-wall-with-swing-door" target="_blank" rel="noopener">Diyversify</a> — ready-made wall kit with swing door</li>
-      <li><a href="https://stemfinity.com/collections/all-store/products/everblock-wall-kit-with-door-6-x-7" target="_blank" rel="noopener">EverBlock (via Stemfinity)</a> — block wall kit with accordion door</li>
+      <li><a href="https://www.homedepot.ca" target="_blank" rel="noopener">The Home Depot Canada</a> — drywall, studs, door, handle, paint, insulation, trim, blinds, folding screens</li>
+      <li><a href="https://diyversify.com/en-ca/products/mounted-straight-partition-with-door" target="_blank" rel="noopener">Diyversify Canada</a> — ready-made wall kit</li>
+      <li><a href="https://www.ikea.com/ca/en/cat/room-dividers-46080/f/white-room-dividers-f-colors--10156/" target="_blank" rel="noopener">IKEA Canada</a> — KALLAX shelving and cabinets</li>
+      <li><a href="https://vevor.ca/office-room-divider-c_10909/vevor-office-partition-room-divider-102-x-71-3-panel-portable-privacy-screen-p_010485661587" target="_blank" rel="noopener">VEVOR Canada</a> — white panels on wheels</li>
+      <li><a href="https://www.staples.ca/products/3178501-en-homcom-6-panel-freestanding-room-divider-white" target="_blank" rel="noopener">Staples Canada</a> — 6-panel folding screen</li>
     </ul>
   </div>
 </section>
@@ -187,13 +189,12 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
 (function(){
 const TYPES={
   drywall:{name:"Build (drywall)",h:"full",color:0xf2f2f0,door:"slab",note:"Built like the existing office wall: steel studs, drywall both sides, same white paint and black base, white door and an interior window with blinds."},
-  kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"slab",panels:0.61,note:"8' kit: 3\" fibreglass panels in 2' modules, screwed to the walls at each end. Fits the 8′4″ ceiling with a 4″ (100 mm) gap on top."},
+  kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"accordion",panels:0.61,note:"Diyversify 10′ × 8′ kit: panels in 2′ modules, screwed to the walls at each end, accordion door. Fits the 8′4″ ceiling with a 4″ (100 mm) gap on top."},
   shelf:{name:"Shelving (IKEA)",free:true,note:"Two KALLAX shelf units, 1.47 m tall, standing on the floor. 1.1 m open walkway by the office."},
   cabinet:{name:"Cabinets (IKEA)",free:true,note:"KALLAX with 4 white doors plus a narrow KALLAX, 1.47 m tall. Closed, tidy storage on the corner side. 1.1 m open walkway."},
   panels:{name:"Panels on wheels",free:true,note:"VEVOR 3-panel white partition on lockable wheels, 1.85 m tall. About 0.9 m open walkway."},
   screen6:{name:"6-panel screen",free:true,note:"HOMCOM 6-panel white folding screen, 1.70 m tall, set in a zigzag. About 1.0 m open walkway."},
   screen:{name:"2 × 4-panel screens",free:true,note:"Two HOMCOM 4-panel white/grey folding screens, 1.71 m tall, set in a zigzag. About 1.0 m open walkway."},
-  block:{name:"Block kit",h:2.134,color:0x8e979c,door:"accordion",blocks:true,note:"7' block wall with a 36\" accordion door. 0.41 m (16″) open above at the 8′4″ ceiling."},
 };
 // existing room is fixed from the photos: corner 3.0 m wide x 2.4 m deep, ceiling 8'4" = 2.54 m (measured)
 let state={type:"drywall",len:3,pos:2.4,door:0.78,ceil:2.54,open:false,win:true};
@@ -489,8 +490,7 @@ const LEVERS={
 const LEVER_URL=HD+"/en/home/categories/building-materials/hardware/door-hardware/door-handles-and-levers/f/defiant/3ogr-ooh";
 const WALLS={
   drywall:{t:"Build it ourselves",s:"Drywall, matches existing walls"},
-  kit:{t:"Ready-made kit",s:"Diyversify 10′ × 8′, swing door, US$3,649"},
-  block:{t:"Block kit",s:"EverBlock, accordion door, from US$921"},
+  kit:{t:"Ready-made kit",s:"Diyversify Canada 10′ × 8′, accordion door, $3,101"},
 };
 const FREE={
   shelf:{t:"Open shelving",s:"IKEA · KALLAX white, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/kallax-shelving-units-58285/",
@@ -553,10 +553,11 @@ function renderCost(){
     document.getElementById('itemsbox').hidden=false;
     setBar('Material total, build it ourselves',fmt(sub+tax),'incl. GST + PST · Home Depot Canada'+(state.win?' · glass extra':''));
   } else if(state.type==="kit"){
-    document.getElementById('t-total').textContent="US$3,649";
-    setBar('Ready-made kit (Diyversify)','US$3,649','10′ × 8′ kit · tax and shipping extra');
-    rows.innerHTML=`<span>Kit 10′ wide × 8′ high</span><span>US$3,649</span><span>Shipping to Canada</span><span>quote</span><span>7′ high version</span><span>US$3,149</span>`;
-    src.innerHTML=`Price from <a href="https://diyversify.com/products/mounted-straight-partition-wall-with-swing-door" target="_blank" rel="noopener">Diyversify</a>, before tax and shipping. No window option.`;
+    const sub=3101, tax=sub*TAX;
+    document.getElementById('t-total').textContent=fmt(sub+tax);
+    setBar('Ready-made kit (Diyversify)',fmt(sub+tax),'incl. GST + PST · freight to BC extra');
+    rows.innerHTML=`<span>Kit 10′ wide × 8′ high</span><span>${fmt2(sub)}</span><span>GST + PST 12%</span><span>${fmt2(tax)}</span><span>Freight to Richmond</span><span>quote</span>`;
+    src.innerHTML=`CAD price from <a href="https://diyversify.com/en-ca/products/mounted-straight-partition-with-door" target="_blank" rel="noopener">Diyversify Canada</a>, Nov 6, 2026. Comes with an accordion door; a swing door is an extra accessory. No window option.`;
     document.getElementById('itemsbox').hidden=true;
   } else if(FREE[state.type]){
     const f=FREE[state.type], sub=f.items.reduce((a,x)=>a+x.q*x.p,0), tax=sub*TAX;
@@ -566,12 +567,6 @@ function renderCost(){
     items.innerHTML=f.items.map(x=>`<li><a href="${f.url}" target="_blank" rel="noopener">${x.n}</a><b class="price">${fmt2(x.q*x.p)}</b><span>${x.q} × ${fmt2(x.p)}</span></li>`).join("");
     document.getElementById('itemsbox').hidden=false;
     setBar(f.t+', no door',fmt(sub+tax),'incl. GST + PST · '+f.store);
-  } else {
-    document.getElementById('t-total').textContent="from US$921";
-    setBar('Block kit (EverBlock)','from US$921','6′ × 7′ kit · tax and shipping extra');
-    rows.innerHTML=`<span>Kit 6′ wide × 7′ high</span><span>US$921</span><span>10′ wide kit</span><span>quote</span>`;
-    src.innerHTML=`Price from <a href="https://stemfinity.com/collections/all-store/products/everblock-wall-kit-with-door-6-x-7" target="_blank" rel="noopener">EverBlock via Stemfinity</a>, before tax and shipping. Leaves a gap under the ceiling.`;
-    document.getElementById('itemsbox').hidden=true;
   }
 }
 
