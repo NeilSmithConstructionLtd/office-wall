@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>NSC Office Wall</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: phone-first app — sticky title bar, one tab visible at a time, bottom tab bar */
+:root{
+  --bg:#eef1f3; --panel:#ffffff; --ink:#1b2328; --muted:#5d6a72; --line:#d6dde1;
+  --accent:#d9620f; --accent-ink:#ffffff; --view:#dfe5e9; --soft:#fbefe6;
+  --display:"Archivo",system-ui,sans-serif; --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171a; --panel:#1a2125; --ink:#e6ecef; --muted:#97a5ad; --line:#2c363c; --accent:#f08a3e; --accent-ink:#1a1206; --view:#20292e; --soft:#2a2019; color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#12171a; --panel:#1a2125; --ink:#e6ecef; --muted:#97a5ad; --line:#2c363c; --accent:#f08a3e; --accent-ink:#1a1206; --view:#20292e; --soft:#2a2019; color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--display);line-height:1.45;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--panel)}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--panel);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:10px}
+.top h1{margin:0;font-size:1.05rem;font-weight:800;letter-spacing:-.01em}
+.top p{margin:0;font-size:.78rem;color:var(--muted);font-family:var(--mono)}
+main{max-width:760px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:14px calc(84px + env(safe-area-inset-bottom,0px))}
+section{display:grid;gap:14px}
+h2{font-size:1.1rem;margin:0}
+.viewer{position:relative;background:var(--view);border:1px solid var(--line);border-radius:8px;overflow:hidden;height:min(58vh,520px);max-width:100%}
+.viewer canvas{display:block;width:100%;height:100%;touch-action:none}
+.views{position:absolute;left:8px;top:8px;display:flex;gap:6px}
+.views button{padding:5px 9px;font-size:.75rem;background:var(--panel)}
+.hint{position:absolute;right:8px;bottom:8px;font-family:var(--mono);font-size:.68rem;color:var(--muted);background:var(--panel);padding:2px 7px;border-radius:3px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;display:grid;gap:12px;min-width:0}
+.label{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:6px}
+.seg.wrap{grid-auto-flow:row;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+button{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:6px;padding:9px 10px;cursor:pointer;min-height:40px}
+button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.opt small{display:block;font-family:var(--mono);font-size:.72rem;opacity:.85}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.note{font-size:.84rem;color:var(--muted);margin:0}
+/* cost */
+.choice{display:grid;gap:8px}
+.wallopt{display:grid;gap:8px}
+.wallopt button{text-align:left;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.wallopt b{font-weight:600}
+.price{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.total{background:var(--soft);border:1px solid var(--accent);border-radius:8px;padding:14px;display:grid;gap:4px}
+.total .big{font-size:2rem;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.total .rows{font-family:var(--mono);font-size:.78rem;color:var(--muted);display:grid;grid-template-columns:1fr auto;gap:2px 10px}
+.src{font-size:.8rem;color:var(--muted);margin:0}
+details{background:var(--panel);border:1px solid var(--line);border-radius:8px}
+summary{cursor:pointer;padding:12px 14px;font-weight:600;list-style:none;display:flex;justify-content:space-between}
+summary::after{content:"+";font-family:var(--mono);color:var(--muted)}
+details[open] summary::after{content:"−"}
+.items{list-style:none;margin:0;padding:0 14px 12px;display:grid}
+.items li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);font-size:.84rem}
+.items li span{color:var(--muted);font-family:var(--mono);font-size:.72rem}
+.items a{color:var(--ink);text-decoration-color:var(--line)}
+.ext{display:grid;gap:6px;font-size:.88rem}
+ul.plain{margin:0;padding-left:18px;display:grid;gap:8px;font-size:.88rem}
+a{color:var(--accent)}
+/* tab bar */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--panel);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(3,1fr);
+  padding-left:max(8px,env(safe-area-inset-left,0px));padding-right:max(8px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+nav.tabs a{display:grid;place-items:center;gap:2px;padding:9px 4px 10px;color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:600}
+nav.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8}
+nav.tabs a[aria-current=page]{color:var(--accent)}
+@media (min-width:900px){main{max-width:1000px}.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>NSC office wall</h1>
+  <p>3.0 m × 2.5 m wall with one door · back corner</p>
+</header>
+
+<main>
+<!-- 3D -->
+<section id="tab-model">
+  <div class="split">
+    <div class="viewer" id="viewer">
+      <div class="views">
+        <button id="v-persp" type="button">3D</button>
+        <button id="v-front" type="button">Front</button>
+        <button id="v-top" type="button">Plan</button>
+        <button id="v-in" type="button">Inside</button>
+      </div>
+      <div class="hint">drag · pinch</div>
+    </div>
+    <div class="card">
+      <div class="label">Wall</div>
+      <div class="seg" id="types"></div>
+      <p class="note" id="tnote"></p>
+      <label for="door" class="label">Door position</label>
+      <input id="door" type="range" min="0" max="1" step="0.01" value="0.78">
+      <div class="seg">
+        <button id="swing" type="button" aria-pressed="false">Open door</button>
+        <button id="win" type="button" aria-pressed="true">Window: on</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COST -->
+<section id="tab-cost" hidden>
+  <div class="card">
+    <div class="label">1 · Pick the wall</div>
+    <div class="wallopt" id="wallopt"></div>
+  </div>
+
+  <div class="card" id="buildopts">
+    <div class="label">2 · Pick the options</div>
+    <div class="choice"><span class="note">Door (36″ × 80″, prehung)</span><div class="seg wrap" id="o-door"></div></div>
+    <div class="choice"><span class="note">Handle</span><div class="seg" id="o-lever"></div></div>
+    <div class="choice"><span class="note">Window in the wall (like the office one)</span><div class="seg" id="o-win"></div></div>
+    <div class="choice"><span class="note">Sound insulation inside the wall</span><div class="seg" id="o-ins"></div></div>
+    <div class="choice"><span class="note">Black base like the other walls</span><div class="seg" id="o-base"></div></div>
+  </div>
+
+  <div class="total" aria-live="polite">
+    <div class="label">Material cost</div>
+    <div class="big" id="t-total">$0</div>
+    <div class="rows" id="t-rows"></div>
+    <p class="src" id="t-src"></p>
+  </div>
+
+  <details id="itemsbox">
+    <summary>Item list</summary>
+    <ul class="items" id="items"></ul>
+  </details>
+</section>
+
+<!-- NOTES -->
+<section id="tab-notes" hidden>
+  <div class="card">
+    <h2>Before we build</h2>
+    <ul class="plain">
+      <li><b>Landlord OK.</b> A fixed wall in the leased unit needs the landlord's approval and may need a City of Richmond permit.</li>
+      <li><b>Sprinkler, air, light.</b> Check the closed-off corner still has a sprinkler head, supply air and a light switch.</li>
+      <li><b>Window end.</b> The wall meets a window mullion; we use a filler strip and seal, no drilling into the glass.</li>
+      <li><b>Ceiling.</b> Measure the T-bar height at both ends. The 8′ kit needs at least 2.49 m.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>How the cost is worked out</h2>
+    <ul class="plain">
+      <li>Wall 3.0 m long × 2.5 m high (to the T-bar), 3-5/8″ steel studs at 16″ centres, 1/2″ drywall both sides.</li>
+      <li>Prices from <b>The Home Depot Canada</b> (homedepot.ca), checked Nov 6, 2026. Tax is GST 5% + PST 7%.</li>
+      <li>Ready-made kits are priced from the makers' websites in US dollars, shipping to Canada extra.</li>
+      <li>Materials only. Our own crew installs. Glass for the interior window comes from a local glass shop and needs a quote.</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Suppliers</h2>
+    <ul class="plain">
+      <li><a href="https://www.homedepot.ca" target="_blank" rel="noopener">The Home Depot Canada</a> — drywall, studs, door, handle, paint, insulation, trim, blinds</li>
+      <li><a href="https://diyversify.com/products/mounted-straight-partition-wall-with-swing-door" target="_blank" rel="noopener">Diyversify</a> — ready-made wall kit with swing door</li>
+      <li><a href="https://stemfinity.com/collections/all-store/products/everblock-wall-kit-with-door-6-x-7" target="_blank" rel="noopener">EverBlock (via Stemfinity)</a> — block wall kit with accordion door</li>
+    </ul>
+  </div>
+</section>
+</main>
+
+<nav class="tabs" aria-label="Sections">
+  <a href="#model" data-tab="model"><svg viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg>3D</a>
+  <a href="#cost" data-tab="cost"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 7h8M8 11h2M14 11h2M8 15h2M14 15h2"/></svg>Cost</a>
+  <a href="#notes" data-tab="notes"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7"/></svg>Notes</a>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+const TYPES={
+  drywall:{name:"Build (drywall)",h:"full",color:0xf2f2f0,door:"slab",note:"Built like the existing office wall: steel studs, drywall both sides, same white paint and black base, white door and an interior window with blinds."},
+  kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"slab",panels:0.61,note:"8' kit: 3\" fibreglass panels in 2' modules, screwed to the walls at each end. Small gap under the ceiling."},
+  block:{name:"Block kit",h:2.134,color:0x8e979c,door:"accordion",blocks:true,note:"7' block wall with a 36\" accordion door. 0.37 m open above at a 2.5 m ceiling."},
+};
+// existing room is fixed from the photos: corner 3.0 m wide x 2.4 m deep, ceiling 2.5 m
+let state={type:"drywall",len:3,pos:2.4,door:0.78,ceil:2.5,open:false,win:true};
+const RW=6.6, RL=10; // main room width and length (estimated)
+const DW=0.915, DH=2.03, T=0.12; // same thickness as existing walls
+
+const host=document.getElementById('viewer');
+const renderer=new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+host.prepend(renderer.domElement);
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(50,4/3,0.05,100);
+const controls=new THREE.OrbitControls(camera,renderer.domElement);
+controls.enableDamping=true; controls.maxPolarAngle=Math.PI/2-0.02;
+scene.add(new THREE.HemisphereLight(0xffffff,0x555555,0.85));
+const sun=new THREE.DirectionalLight(0xffffff,0.55); sun.position.set(-6,8,3); scene.add(sun);
+
+const M=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:0.85},o));
+function box(w,h,d,mat,x,y,z,parent){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);m.position.set(x,y,z);(parent||scene).add(m);return m;}
+
+// static room
+const room=new THREE.Group(); scene.add(room);
+function buildRoom(){
+  room.clear();
+  const H=state.ceil, AW=state.len, DJ=state.pos;
+  const white=new THREE.MeshStandardMaterial({color:0xf6f6f3,map:paintTex(),roughness:0.9}), black=M(0x1b1b1b), mull=M(0x26292b,{roughness:0.5});
+  // CARPET: charcoal carpet tile with mixed grey streaks (from photos)
+  box(RW,0.02,RL,new THREE.MeshStandardMaterial({map:carpetTex(),roughness:1}),RW/2,-0.01,RL/2,room);
+
+  // BACK WALL (z=0): white, whiteboard, white corner desk with printer
+  box(RW,H,0.1,white,RW/2,H/2,-0.05,room);
+  box(0.95,0.65,0.03,M(0xffffff,{roughness:0.25}),AW*0.5,1.5,0.02,room);
+  box(0.99,0.69,0.02,M(0xb9bdbf),AW*0.5,1.5,0.005,room);
+  box(1.8,0.04,0.62,white,AW*0.5,0.74,0.31,room);
+  box(0.62,0.04,1.0,white,0.75,0.74,0.8,room);
+  box(0.42,0.7,0.55,white,AW*0.5-0.65,0.36,0.3,room);
+  box(0.45,0.7,0.55,white,AW*0.5+0.65,0.36,0.3,room);
+  box(0.55,0.08,0.35,M(0x1e1e1e),AW*0.42,0.8,0.25,room); // standing-desk riser
+  label('Corner desk + whiteboard',AW*0.5,2.15,0.3);
+
+  // EXTERIOR WINDOW WALL (x=0): white sill, glass nearly to ceiling, thin black mullions
+  box(0.16,0.42,RL,white,-0.02,0.21,RL/2,room);
+  box(0.02,H-0.62,RL,M(0x9fc4d6,{transparent:true,opacity:0.3,roughness:0.05}),-0.06,0.42+(H-0.62)/2,RL/2,room);
+  box(0.12,0.2,RL,white,-0.02,H-0.1,RL/2,room);
+  box(0.03,0.75,RL,M(0x5f6366),0.02,H-0.6,RL/2,room); // grey roller shades, part way down
+  box(0.1,0.25,RL,M(0xe8e8e4),0.07,0.22,RL/2,room);  // perimeter heater
+  for(let z=0;z<=RL+0.01;z+=1.6) box(0.06,H-0.2,0.05,mull,-0.05,(H-0.2)/2,Math.min(z,RL),room);
+  box(0.06,0.04,RL,mull,-0.05,0.43,RL/2,room); box(0.06,0.04,RL,mull,-0.05,H-0.21,RL/2,room);
+  label('Exterior windows',-0.05,H+0.25,5.2);
+
+  // OFFICE BLOCK beside the corner: side wall at x=AW, FRONT FACE at z=DJ with the interior window and doors
+  // side face (x=AW) with a long interior window over the cabinet
+  const sz0=0.75, sz1=DJ-0.35, sy0=1.0, sy1=2.05;
+  box(0.14,sy0,DJ,white,AW+0.07,sy0/2,DJ/2,room);
+  box(0.14,H-sy1,DJ,white,AW+0.07,(H+sy1)/2,DJ/2,room);
+  box(0.14,sy1-sy0,sz0,white,AW+0.07,(sy0+sy1)/2,sz0/2,room);
+  box(0.14,sy1-sy0,DJ-sz1,white,AW+0.07,(sy0+sy1)/2,(sz1+DJ)/2,room);
+  box(0.02,sy1-sy0,sz1-sz0,M(0xbcd6e0,{transparent:true,opacity:0.45,roughness:0.05}),AW+0.07,(sy0+sy1)/2,(sz0+sz1)/2,room);
+  for(let y=sy1-0.04;y>sy0+0.05;y-=0.045) box(0.01,0.025,sz1-sz0-0.04,M(0xe6e6e2),AW+0.11,y,(sz0+sz1)/2,room); // blinds down
+  box(0.18,0.05,sz1-sz0+0.06,white,AW+0.06,sy0,(sz0+sz1)/2,room); box(0.16,0.05,sz1-sz0+0.06,white,AW+0.07,sy1,(sz0+sz1)/2,room);
+  [sz0,sz1].forEach(z=>box(0.16,sy1-sy0,0.05,white,AW+0.07,(sy0+sy1)/2,z,room));
+  label('Side window (office)',AW,H+0.25,(sz0+sz1)/2);
+  // light pink striped cabinet under the side window
+  const cab=M(0xf1dcd6); box(0.55,0.82,1.25,cab,AW-0.28,0.41,sz0+0.75,room);
+  for(let z=sz0+0.2;z<sz0+1.35;z+=0.08) box(0.005,0.7,0.01,M(0xe2c8c0),AW-0.556,0.41,z,room);
+  box(0.57,0.03,1.27,M(0xffffff),AW-0.28,0.83,sz0+0.75,room);
+  // wide-format plotter at the back
+  box(1.0,0.28,0.45,M(0x2a2c2e),AW-0.85,0.95,0.35,room); box(0.9,0.75,0.4,M(0x1c1d1f),AW-0.85,0.4,0.35,room);
+  box(RW-AW,H,0.14,white,(AW+RW)/2,H/2,DJ+0.07,room);
+  const wx0=AW+0.35, wx1=AW+1.75, wy0=1.0, wy1=2.0;
+  const glass=box(wx1-wx0,wy1-wy0,0.03,M(0xbcd6e0,{transparent:true,opacity:0.45,roughness:0.05}),(wx0+wx1)/2,(wy0+wy1)/2,DJ+0.15,room);
+  for(let y=wy1-0.05;y>wy1-0.45;y-=0.045) box(wx1-wx0-0.06,0.025,0.01,M(0xe6e6e2),(wx0+wx1)/2,y,DJ+0.1,room); // blinds part-way down
+  box(wx1-wx0+0.08,0.05,0.18,white,(wx0+wx1)/2,wy0,DJ+0.08,room); box(wx1-wx0+0.08,0.05,0.16,white,(wx0+wx1)/2,wy1,DJ+0.08,room);
+  [wx0,wx1].forEach(x=>box(0.05,wy1-wy0,0.16,white,x,(wy0+wy1)/2,DJ+0.08,room));
+  box(1.0,0.74,0.6,white,(wx0+wx1)/2,0.37,DJ-0.7,room); box(0.5,0.32,0.06,M(0x111111),(wx0+wx1)/2,0.98,DJ-0.9,room); // desk inside
+  // office doors along the same face
+  [AW+2.15,AW+3.25].forEach(x=>{box(0.9,2.05,0.04,M(0xfbfbf9),x,1.025,DJ+0.16,room);box(1.0,0.05,0.16,white,x,2.08,DJ+0.08,room);
+    box(0.12,0.02,0.05,M(0x9a9a9a,{metalness:0.6,roughness:0.3}),x+0.33,1.05,DJ+0.19,room);});
+  label('Front window (office)',(wx0+wx1)/2,H+0.25,DJ+0.1);
+
+  // black baseboard
+  box(RW,0.1,0.012,black,RW/2,0.05,0.006,room);
+  box(0.012,0.1,DJ,black,AW-0.006,0.05,DJ/2,room); // base on office side wall
+  box(RW-AW,0.1,0.012,black,(AW+RW)/2,0.05,DJ+0.146,room);
+
+  // FURNITURE from the photos
+  // black console on a beige rug under the interior window
+  box(1.9,0.01,1.1,M(0xd9c8a8),(wx0+wx1)/2,0.006,DJ+0.75,room);
+  box(1.2,0.03,0.42,black,(wx0+wx1)/2,0.76,DJ+0.38,room); box(1.1,0.1,0.38,black,(wx0+wx1)/2,0.69,DJ+0.38,room);
+  box(0.04,0.02,0.02,M(0xb8954f,{metalness:0.6}),(wx0+wx1)/2,0.69,DJ+0.58,room);
+  [[-0.56,0.2],[0.56,0.2],[-0.56,0.55],[0.56,0.55]].forEach(([dx,dz])=>box(0.04,0.75,0.04,black,(wx0+wx1)/2+dx,0.375,DJ+dz,room));
+  // cream sofa with wood legs along the windows
+  const sofa=M(0xece4d6);
+  box(0.82,0.38,2.1,sofa,0.62,0.29,DJ+1.9,room); box(0.22,0.42,2.1,sofa,0.3,0.6,DJ+1.9,room);
+  box(0.82,0.24,0.18,sofa,0.62,0.5,DJ+0.85,room); box(0.82,0.24,0.18,sofa,0.62,0.5,DJ+2.95,room);
+  [[0.3,DJ+0.9],[0.95,DJ+0.9],[0.3,DJ+2.9],[0.95,DJ+2.9]].forEach(([x,z])=>box(0.05,0.1,0.05,M(0xb08350),x,0.05,z,room));
+  // the two plants the new wall runs between (small fiddle-leaf figs in white pots)
+  [[0.4,DJ-0.45],[AW+0.15,DJ+0.45]].forEach(([x,z])=>{
+    box(0.22,0.24,0.22,M(0xffffff),x,0.12,z,room);
+    box(0.02,0.5,0.02,M(0x5a4632),x,0.49,z,room);
+    const l=new THREE.Mesh(new THREE.SphereGeometry(0.2,10,8),M(0x3f6b2f));l.position.set(x,0.85,z);l.scale.y=1.5;room.add(l);});
+  // open office: L-shaped white desks in the corners of the main hall, black monitors and chairs
+  const ldesk=(x,z,fx,fz)=>{ // corner at (x,z); fx/fz = direction the desk runs from the corner
+    box(1.6,0.04,0.7,white,x+fx*0.8,0.74,z+fz*0.35,room); box(0.7,0.04,1.2,white,x+fx*0.35,0.74,z+fz*1.3,room);
+    box(0.04,0.72,0.66,white,x+fx*1.58,0.36,z+fz*0.35,room); box(0.66,0.72,0.04,white,x+fx*0.35,0.36,z+fz*1.88,room);
+    box(0.55,0.32,0.04,M(0x111111),x+fx*0.9,0.98,z+fz*0.12,room); box(0.04,0.32,0.5,M(0x111111),x+fx*0.12,0.98,z+fz*1.2,room);
+    box(0.5,0.9,0.5,M(0x2a2a2a),x+fx*1.0,0.45,z+fz*1.1,room);};
+  ldesk(0.1,RL,1,-1);          // far corner on the window side
+  ldesk(RW,RL,-1,-1);          // far corner on the inside wall
+  box(0.6,0.74,1.6,white,RW-0.32,0.37,DJ+3.2,room); box(0.5,0.25,0.45,M(0x1f1f1f),RW-0.32,0.87,DJ+2.9,room); // printer desk
+  label('Main hall',3.2,1.8,RL-1.5);
+}
+
+function paintTex(){
+  if(paintTex.t) return paintTex.t;
+  const c=document.createElement('canvas'); c.width=c.height=256; const x=c.getContext('2d');
+  x.fillStyle='#ffffff'; x.fillRect(0,0,256,256);
+  let seed=11; const rnd=()=>((seed=(seed*16807)%2147483647)/2147483647);
+  for(let i=0;i<9000;i++){const v=236+Math.floor(rnd()*19); x.fillStyle=`rgb(${v},${v},${v-2})`; x.fillRect(rnd()*256,rnd()*256,1.5,1.5);}
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(3,3);
+  return paintTex.t=t;
+}
+function carpetTex(){
+  if(carpetTex.t) return carpetTex.t;
+  const c=document.createElement('canvas'); c.width=c.height=512; const x=c.getContext('2d');
+  const tones=['#2b2d30','#33363a','#3b3e43','#26282b','#45484d'];
+  const n=8, ts=512/n; let seed=7; const rnd=()=>((seed=(seed*16807)%2147483647)/2147483647);
+  for(let i=0;i<n;i++)for(let j=0;j<n;j++){
+    x.fillStyle=tones[(i+j)%2?0:1]; x.fillRect(i*ts,j*ts,ts,ts);
+    const horiz=(i+j)%2===0;
+    for(let k=0;k<26;k++){x.fillStyle=tones[Math.floor(rnd()*tones.length)];
+      const a=rnd()*ts,b=rnd()*ts,l=8+rnd()*28,w=2+rnd()*3;
+      horiz?x.fillRect(i*ts+a,j*ts+b,Math.min(l,ts-a),w):x.fillRect(i*ts+a,j*ts+b,w,Math.min(l,ts-b));}
+    x.strokeStyle='rgba(0,0,0,0.25)'; x.strokeRect(i*ts+0.5,j*ts+0.5,ts-1,ts-1);}
+  const t=new THREE.CanvasTexture(c); t.wrapS=t.wrapT=THREE.RepeatWrapping; t.repeat.set(RW/(0.61*n),RL/(0.61*n)); t.anisotropy=4;
+  return carpetTex.t=t;
+}
+
+function label(text,x,y,z,parent){
+  const c=document.createElement('canvas'),ctx=c.getContext('2d'),fs=44;
+  ctx.font=`600 ${fs}px Archivo, system-ui, sans-serif`;
+  const w=Math.ceil(ctx.measureText(text).width)+36; c.width=w; c.height=fs+28;
+  ctx.font=`600 ${fs}px Archivo, system-ui, sans-serif`;
+  ctx.fillStyle='rgba(27,35,40,0.82)'; ctx.beginPath(); ctx.roundRect?ctx.roundRect(0,0,w,c.height,10):ctx.rect(0,0,w,c.height); ctx.fill();
+  ctx.fillStyle='#ffffff'; ctx.textBaseline='middle'; ctx.fillText(text,18,c.height/2+2);
+  const tex=new THREE.CanvasTexture(c); tex.minFilter=THREE.LinearFilter;
+  const sp=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,depthTest:false,transparent:true}));
+  const h=0.2; sp.scale.set(h*w/c.height,h,1); sp.position.set(x,y,z); sp.renderOrder=10;
+  (parent||room).add(sp); return sp;
+}
+
+// partition
+const part=new THREE.Group(); scene.add(part);
+let doorLeaf=null;
+function buildWall(){
+  part.clear(); doorLeaf=null;
+  const t=TYPES[state.type], L=state.len+0.03, H=state.ceil;
+  const wh=t.h==="full"?H:Math.min(t.h,H-0.01);
+  const x0=-0.03; // starts at the window line, ends flush on the office wall face
+  const dc=Math.max(DW/2+0.05,Math.min(L-DW/2-0.05,state.door*L)); // door centre along wall
+  const dL=dc-DW/2, dR=dc+DW/2;
+  part.position.set(x0,0,state.pos);
+  const mat=t.glass?M(0xcfe0e6,{transparent:true,opacity:0.55,roughness:0.15}):(state.type==='drywall'?new THREE.MeshStandardMaterial({color:0xf6f6f3,map:paintTex(),roughness:0.9}):M(t.color));
+  const frame=M(0x1d1f21,{roughness:0.5});
+  // solid parts: left of door, right of door, header
+  const seg=(a,b,y0,y1)=>{if(b-a<0.005||y1-y0<0.005)return; box(b-a,y1-y0,T,mat,(a+b)/2,(y0+y1)/2,0,part);};
+  // interior window like the existing office window (1.4 x 1.0 m, sill at 1.0 m, white frame, blinds)
+  let win=null;
+  if(state.win&&state.type==='drywall'){
+    const spaceL=dL-0.3, spaceR=L-dR-0.3, ww=Math.min(1.4,Math.max(spaceL,spaceR));
+    if(ww>=0.6){const c=spaceL>=spaceR?dL/2:(dR+L)/2; win={x0:c-ww/2,x1:c+ww/2,y0:1.0,y1:Math.min(2.0,wh-0.15)};}
+  }
+  if(win){
+    const sideOf=(a,b)=>{ if(win.x1<=a||win.x0>=b){seg(a,b,0,wh);return;} seg(a,win.x0,0,wh); seg(win.x1,b,0,wh); seg(win.x0,win.x1,0,win.y0); seg(win.x0,win.x1,win.y1,wh); };
+    sideOf(0,dL); sideOf(dR,L);
+    const wc=(win.x0+win.x1)/2, ww=win.x1-win.x0, wht=win.y1-win.y0, fw=M(0xffffff);
+    box(ww,wht,0.02,M(0xbcd6e0,{transparent:true,opacity:0.45,roughness:0.05}),wc,(win.y0+win.y1)/2,0,part);
+    for(let y=win.y1-0.05;y>win.y1-0.45;y-=0.045) box(ww-0.06,0.025,0.01,M(0xe6e6e2),wc,y,-0.03,part);
+    box(ww+0.08,0.05,T+0.06,fw,wc,win.y0,0,part); box(ww+0.08,0.05,T+0.04,fw,wc,win.y1,0,part);
+    [win.x0,win.x1].forEach(x=>box(0.05,wht,T+0.04,fw,x,(win.y0+win.y1)/2,0,part));
+    label('Window',wc,win.y1+0.25,0.05,part);
+  } else { seg(0,dL,0,wh); seg(dR,L,0,wh); }
+  seg(dL,dR,DH,wh);
+  // decoration
+  if(t.panels){for(let x=t.panels;x<L-0.01;x+=t.panels){if(x>dL-0.01&&x<dR+0.01)continue;box(0.008,wh,T+0.004,M(0xc9cccd),x,wh/2,0,part);}
+    box(L,0.01,T+0.004,M(0xc9cccd),L/2,1.22,0,part);}
+  if(t.blocks){for(let y=0.15;y<wh;y+=0.15)box(L,0.006,T+0.004,M(0x6f777b),L/2,y,0,part);}
+  if(t.glass){[0,L].forEach(x=>box(0.05,wh,T+0.01,frame,x,wh/2,0,part));
+    box(L,0.05,T+0.01,frame,L/2,wh-0.025,0,part);box(L,0.08,T+0.01,frame,L/2,0.04,0,part);
+    for(let x=1.2;x<L-0.1;x+=1.2){if(x>dL-0.05&&x<dR+0.05)continue;box(0.04,wh,T+0.01,frame,x,wh/2,0,part);}
+    box(L,0.04,T+0.01,frame,L/2,DH,0,part);}
+  if(state.type==='drywall'){box(dL+0.03,0.1,T+0.012,M(0x1b1b1b),(dL-0.03)/2+0.015,0.05,0,part);box(L-dR,0.1,T+0.012,M(0x1b1b1b),(dR+L)/2,0.05,0,part);}
+  // door frame
+  const fm=t.glass?frame:M(0xffffff);
+  box(0.04,DH,T+0.02,fm,dL-0.02,DH/2,0,part);box(0.04,DH,T+0.02,fm,dR+0.02,DH/2,0,part);box(DW+0.08,0.04,T+0.02,fm,dc,DH+0.02,0,part);
+  // door leaf
+  const pivot=new THREE.Group(); pivot.position.set(dL,0,0); part.add(pivot);
+  if(t.door==="accordion"){
+    const n=8,pw=(DW-0.02)/n;
+    for(let i=0;i<n;i++){const p=box(pw,DH-0.02,0.02,M(0xdedede),pw*i+pw/2+0.01,DH/2,0,pivot);p.userData.i=i;}
+    doorLeaf={kind:"acc",g:pivot,n,pw};
+  } else {
+    const lm=(t.door==="glass"||(state.type==='drywall'&&state.doorKind==='glass'))?M(0xcfe0e6,{transparent:true,opacity:0.6,roughness:0.1}):M(state.type==='drywall'?0xfbfbf9:0xb48a5a);
+    const leaf=box(DW-0.02,DH-0.02,0.045,lm,DW/2,DH/2,0,pivot);
+    box(0.12,0.02,0.06,M(0x9a9a9a,{metalness:0.6,roughness:0.3}),DW-0.12,1.05,0,pivot);
+    doorLeaf={kind:"swing",g:pivot};
+  }
+  label('New wall',L/2,wh+0.45,0,part);
+  label('Door',dc,DH+0.35,0.05,part);
+  applyDoor();
+  updateSpec(wh,dc,x0);
+}
+function applyDoor(){
+  if(!doorLeaf)return;
+  if(doorLeaf.kind==="swing"){doorLeaf.g.rotation.y=state.open?-Math.PI*0.45:0;}
+  else{doorLeaf.g.children.forEach(p=>{const i=p.userData.i,f=state.open?0.25:1;p.position.x=(doorLeaf.pw*f)*i+doorLeaf.pw/2+0.01;p.rotation.y=state.open?((i%2)?0.9:-0.9):0;});}
+}
+function updateSpec(wh,dc,x0){
+  const t=TYPES[state.type],gap=state.ceil-wh;
+    const rows=[["Wall",`${state.len.toFixed(2)} m × ${wh.toFixed(2)} m`],["Area",`${(state.len*wh).toFixed(1)} m² (${(state.len*wh*10.764).toFixed(0)} sf)`],
+    ["Door","915 × 2030 mm (36\" × 80\")"],["Door centre",`${dc.toFixed(2)} m from window wall`],
+    ["Gap to ceiling",gap<0.005?"none":`${(gap*1000).toFixed(0)} mm`],["Enclosed corner",`${state.len.toFixed(2)} × ${state.pos.toFixed(2)} m ≈ ${(state.len*state.pos).toFixed(1)} m²`],["Ends","window mullion · office front corner (flush)"]];
+  const n=document.getElementById('tnote'); if(n) n.textContent=t.note;
+}
+
+
+
+// ---------- prices: The Home Depot Canada, checked 2026-11-06 ----------
+const HD="https://www.homedepot.ca";
+const P={
+  stud:{n:"Bailey 3-5/8″ × 10 ft steel stud",p:14.26,u:HD+"/product/bailey-metal-products-platinum-plus-3-5-8-inch-x-10-ft-galvanized-steel-wall-framing-stud/1000497128"},
+  track:{n:"Bailey 3-5/8″ × 10 ft steel track",p:14.00,u:HD+"/en/home/categories/building-materials/drywall/drywall-steel-studs-and-framing/f/bulk-pricing/mgq-xzs"},
+  board:{n:"CGC Sheetrock 1/2″ × 4 × 10 ft UltraLight",p:17.13,u:HD+"/en/home/categories/building-materials/drywall/drywall-boards.html"},
+  mud:{n:"CGC All Purpose-Lite compound, 17 L",p:37.31,u:HD+"/product/cgc-sheetrock-all-purpose-lite-drywall-compound-ready-mixed-17-l-pail/1001728974"},
+  tape:{n:"CGC Synko paper joint tape, 500 ft",p:5.67,u:HD+"/en/home/categories/building-materials/drywall/drywall-joint-tape.html"},
+  screws:{n:"Paulin #6 × 1-1/4″ drywall screws, 1000",p:24.98,u:HD+"/en/home/categories/building-materials/hardware/fasteners/screws/drywall-screws.html"},
+  casing:{n:"Alexandria primed MDF casing, 7 ft, 10-pack",p:52.78,u:HD+"/en/home/categories/building-materials/moulding-and-millwork/moulding/door-and-window-moulding/f/mdf/fwd-ael"},
+  paint:{n:"Behr Premium Plus eggshell, Ultra Pure White, 3.79 L",p:45.97,u:HD+"/product/behr-premium-plus-interior-eggshell-enamel-paint-primer-in-ultra-pure-white-ppu18-06-3-79l/1001838096"},
+  ins:{n:"ROCKWOOL Safe'n'Sound 3″, 59.7 sq ft",p:122.39,u:HD+"/en/home/categories/all/collections/soundproofing-products/f/canadian-made/448n-3ylq"},
+  blind:{n:"StyleWell 48″ cordless vinyl blind",p:49.98,u:HD+"/product/stylewell-48-in-cut-to-width-x-48-in-l-1-3-8-in-blind-slat-w-room-darkening-cordless-vinyl-window-blinds/1001861834"},
+  base:{n:"Shur Trim 4″ black vinyl base, 120 ft roll",p:118.00,u:HD+"/product/shur-trim-4-inch-vinyl-wall-cove-base-120-foot-roll-black/1000755080"},
+};
+const DOORS={
+  hollow:{t:"Hollow core",n:"Masonite flush hollow core prehung",p:218.00},
+  solid:{t:"Solid core",n:"Masonite Berkley solid core prehung",p:372.00},
+  glass:{t:"Frosted glass",n:"Ark Design 1-lite frosted glass prehung",p:671.00},
+};
+const DOOR_URL=HD+"/en/home/categories/windows-and-doors/interior-doors/prehung-doors/f/36-x-80/1j36-32kr";
+const LEVERS={
+  passage:{t:"Push / pull",n:"Defiant Naples passage lever",p:34.98},
+  keyed:{t:"With key lock",n:"Defiant Wave keyed entry lever",p:22.98},
+};
+const LEVER_URL=HD+"/en/home/categories/building-materials/hardware/door-hardware/door-handles-and-levers/f/defiant/3ogr-ooh";
+const WALLS={
+  drywall:{t:"Build it ourselves",s:"Drywall, matches existing walls"},
+  kit:{t:"Ready-made kit",s:"Diyversify 10′ × 8′, swing door, US$3,649"},
+  block:{t:"Block kit",s:"EverBlock, accordion door, from US$921"},
+};
+const TAX=0.12;
+let cost={door:"hollow",lever:"passage",ins:true,base:false};
+state.doorKind=cost.door;
+
+const fmt=n=>"$"+n.toLocaleString("en-CA",{minimumFractionDigits:0,maximumFractionDigits:0});
+const fmt2=n=>"$"+n.toLocaleString("en-CA",{minimumFractionDigits:2,maximumFractionDigits:2});
+
+function lines(){
+  const win=state.win, L=[];
+  const add=(k,q,o)=>L.push(Object.assign({q},P[k]||{},o||{}));
+  add("stud",11+(win?2:0)); add("track",3+(win?1:0)); add("board",6);
+  add("mud",1); add("tape",1); add("screws",1);
+  const d=DOORS[cost.door]; L.push({q:1,n:d.n+" 36″",p:d.p,u:DOOR_URL});
+  const l=LEVERS[cost.lever]; L.push({q:1,n:l.n,p:l.p,u:LEVER_URL});
+  add("casing",1); add("paint",1);
+  if(cost.ins) add("ins",1);
+  if(win) add("blind",1);
+  if(cost.base) add("base",1);
+  return L;
+}
+function renderCost(){
+  // wall cards
+  const wo=document.getElementById('wallopt'); wo.innerHTML="";
+  Object.entries(WALLS).forEach(([k,v])=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-pressed',state.type===k);
+    b.innerHTML=`<span><b>${v.t}</b><small>${v.s}</small></span>`;b.className='opt';
+    b.onclick=()=>{state.type=k;syncAll();buildWall();};wo.appendChild(b);});
+  document.getElementById('buildopts').hidden=state.type!=="drywall";
+  const seg=(id,opts,cur,set)=>{const el=document.getElementById(id);el.innerHTML="";opts.forEach(([v,t,p])=>{const b=document.createElement('button');b.type='button';b.className='opt';
+    b.setAttribute('aria-pressed',cur===v);b.innerHTML=t+(p!=null?`<small>${p}</small>`:"");b.onclick=()=>{set(v);syncAll();buildWall();};el.appendChild(b);});};
+  seg('o-door',Object.entries(DOORS).map(([k,d])=>[k,d.t,fmt(d.p)]),cost.door,v=>{cost.door=v;state.doorKind=v;});
+  seg('o-lever',Object.entries(LEVERS).map(([k,d])=>[k,d.t,fmt2(d.p)]),cost.lever,v=>cost.lever=v);
+  seg('o-win',[[true,"Yes","+ studs, blind"],[false,"No",null]],state.win,v=>state.win=v);
+  seg('o-ins',[[true,"Yes",fmt2(P.ins.p)],[false,"No",null]],cost.ins,v=>cost.ins=v);
+  seg('o-base',[[true,"Buy new",fmt(P.base.p)],[false,"Use leftover",null]],cost.base,v=>cost.base=v);
+
+  const rows=document.getElementById('t-rows'), src=document.getElementById('t-src'), items=document.getElementById('items');
+  if(state.type==="drywall"){
+    const L=lines(), sub=L.reduce((a,x)=>a+x.q*x.p,0), tax=sub*TAX;
+    document.getElementById('t-total').textContent=fmt(sub+tax);
+    rows.innerHTML=`<span>Materials</span><span>${fmt2(sub)}</span><span>GST + PST 12%</span><span>${fmt2(tax)}</span>`+(state.win?`<span>Window glass</span><span>glass shop quote</span>`:"");
+    src.innerHTML=`Prices from <b>The Home Depot Canada</b>, Nov 6, 2026. Materials only, our crew installs.`;
+    items.innerHTML=L.map(x=>`<li><a href="${x.u}" target="_blank" rel="noopener">${x.n}</a><b class="price">${fmt2(x.q*x.p)}</b><span>${x.q} × ${fmt2(x.p)}</span></li>`).join("");
+    document.getElementById('itemsbox').hidden=false;
+  } else if(state.type==="kit"){
+    document.getElementById('t-total').textContent="US$3,649";
+    rows.innerHTML=`<span>Kit 10′ wide × 8′ high</span><span>US$3,649</span><span>Shipping to Canada</span><span>quote</span><span>7′ high version</span><span>US$3,149</span>`;
+    src.innerHTML=`Price from <a href="https://diyversify.com/products/mounted-straight-partition-wall-with-swing-door" target="_blank" rel="noopener">Diyversify</a>, before tax and shipping. No window option.`;
+    document.getElementById('itemsbox').hidden=true;
+  } else {
+    document.getElementById('t-total').textContent="from US$921";
+    rows.innerHTML=`<span>Kit 6′ wide × 7′ high</span><span>US$921</span><span>10′ wide kit</span><span>quote</span>`;
+    src.innerHTML=`Price from <a href="https://stemfinity.com/collections/all-store/products/everblock-wall-kit-with-door-6-x-7" target="_blank" rel="noopener">EverBlock via Stemfinity</a>, before tax and shipping. Leaves a gap under the ceiling.`;
+    document.getElementById('itemsbox').hidden=true;
+  }
+}
+
+// ---------- 3D controls ----------
+const tw=document.getElementById('types');
+Object.entries(TYPES).forEach(([k,v])=>{const b=document.createElement('button');b.type='button';b.id='t-'+k;b.textContent=v.name;b.onclick=()=>{state.type=k;syncAll();buildWall();};tw.appendChild(b);});
+function syncAll(){
+  Object.keys(TYPES).forEach(k=>document.getElementById('t-'+k).setAttribute('aria-pressed',state.type===k));
+  const s=document.getElementById('swing');s.setAttribute('aria-pressed',state.open);s.textContent=state.open?'Close door':'Open door';
+  const w=document.getElementById('win');w.hidden=state.type!=="drywall";w.setAttribute('aria-pressed',state.win);w.textContent='Window: '+(state.win?'on':'off');
+  renderCost();
+}
+document.getElementById('door').addEventListener('input',e=>{state.door=parseFloat(e.target.value);buildWall();});
+document.getElementById('swing').onclick=()=>{state.open=!state.open;syncAll();applyDoor();};
+document.getElementById('win').onclick=()=>{state.win=!state.win;syncAll();buildWall();};
+
+function view(v){
+  const c=new THREE.Vector3(state.len/2,1.1,state.pos);
+  if(v==='front'){camera.position.set(state.len/2,1.4,state.pos+5.0);}
+  else if(v==='in'){camera.position.set(state.len*0.4,1.5,0.35);controls.target.set(state.len/2,1.1,state.pos+1);controls.update();return;}
+  else if(v==='top'){camera.position.set(state.len/2+0.8,10,state.pos+1.01);c.set(state.len/2+0.8,0,state.pos+1);}
+  else{camera.position.set(state.len+2.6,3.2,state.pos+4.6);}
+  controls.target.copy(c);controls.update();
+}
+document.getElementById('v-persp').onclick=()=>view('p');
+document.getElementById('v-front').onclick=()=>view('front');
+document.getElementById('v-top').onclick=()=>view('top');
+document.getElementById('v-in').onclick=()=>view('in');
+
+function resize(){const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
+new ResizeObserver(resize).observe(host);
+function bg(){scene.background=new THREE.Color(getComputedStyle(document.documentElement).getPropertyValue('--view').trim()||'#dfe5e9');}
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',bg);
+new MutationObserver(bg).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+// ---------- tabs ----------
+const TABS=["model","cost","notes"];
+function showTab(){
+  const t=TABS.includes(location.hash.slice(1))?location.hash.slice(1):"model";
+  TABS.forEach(x=>{document.getElementById('tab-'+x).hidden=x!==t;});
+  document.querySelectorAll('nav.tabs a').forEach(a=>a.toggleAttribute('aria-current',a.dataset.tab===t)||(a.dataset.tab===t&&a.setAttribute('aria-current','page')));
+  document.querySelectorAll('nav.tabs a').forEach(a=>{if(a.dataset.tab===t)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
+  if(t==="model")requestAnimationFrame(resize);
+  window.scrollTo(0,0);
+}
+addEventListener('hashchange',showTab);
+
+bg();buildRoom();syncAll();buildWall();view('p');showTab();resize();
+(function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
+})();
+</script>
+
+</body>
+</html>
