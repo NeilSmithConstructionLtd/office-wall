@@ -60,6 +60,8 @@ details[open] summary::after{content:"−"}
 .items li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line);font-size:.84rem}
 .items li span{color:var(--muted);font-family:var(--mono);font-size:.72rem}
 .items a{color:var(--ink);text-decoration-color:var(--line)}
+.chip{font-style:normal;display:inline-block;font-family:var(--mono);font-size:.66rem;padding:1px 6px;border-radius:999px;margin-right:6px;vertical-align:1px}
+.chip.in{background:#d9f0dc;color:#1e5b2a}.chip.out{background:var(--line);color:var(--muted)}.chip.chk{background:var(--soft);color:var(--accent)}
 .ext{display:grid;gap:6px;font-size:.88rem}
 ul.plain{margin:0;padding-left:18px;display:grid;gap:8px;font-size:.88rem}
 a{color:var(--accent)}
@@ -139,6 +141,12 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
   <details id="itemsbox">
     <summary>Item list</summary>
     <ul class="items" id="items"></ul>
+  </details>
+
+  <details id="extra">
+    <summary>Extra · more white dividers on Walmart.ca</summary>
+    <p class="note" style="padding:0 14px 6px">Walmart.ca does not sell these itself; each one is from a marketplace seller. Prices before tax, checked Nov 6–9, 2026. Check the seller and return policy before ordering.</p>
+    <ul class="items" id="wm-list"></ul>
   </details>
 </section>
 
@@ -535,6 +543,23 @@ function lines(){
   if(cost.base) add("base",1);
   return L;
 }
+const WM=[
+  {n:"Tall extra-wide folding screen, 6 ft, white",p:229.99,st:"in",r:"★4.5 (24) · Gilberts Outlet, fulfilled by Walmart",u:"https://www.walmart.ca/en/ip/Tall-Extra-Wide-Foldable-Panel-Partition-Wall-Divider-Double-Hinged-Room-and-Folding-Privacy-Screens-6-feet-White/4JTDA8G88MNO"},
+  {n:"Costway 6-panel screen, steel frame, white",p:149.99,st:"in",r:"★4.1 (10) · Goplus Corp",u:"https://www.walmart.ca/en/ip/Costway-6-Panel-Room-Divider-Folding-Privacy-Screen-w-Steel-Frame-Decoration-White/PRD27JWFO9N5N2O"},
+  {n:"HOMCOM 6 ft 4-panel divider with shelves, white",p:109.99,st:"in",r:"Clearance · seller not shown",u:"https://www.walmart.ca/en/c/kp/room-divider-shelves"},
+  {n:"Costway 3-panel divider with shelves, on wheels",p:139.99,st:"chk",r:"★4.4 (55) · price shown for black, white swatch on page",u:"https://www.walmart.ca/en/c/kp/room-divider-shelves"},
+  {n:"FDW 4-panel shoji screen, 6 ft, white",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/FDW-Room-Divider-4-Panel-Oriental-Shoji-Screen-6Ft-Folding-Privacy-Wall-Portable-Freestanding-Partition-Japanese-Inspired-Wood-Divider-White/5IWU5EBXFHXI"},
+  {n:"67″ 6-panel wooden folding screen, white",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/67-6-Panel-Folding-Room-Divider-Privacy-Screen-Freestanding-Wooden-White/PRD7BFI7TYY4CAS"},
+  {n:"Costway 6-panel rolling screen, 6 ft, lockable wheels, white",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/Costway-6-Panel-Folding-Room-Divider-6FT-Rolling-Privacy-Screen-with-Lockable-Wheels-White/1B5MUNKN7MXE"},
+  {n:"VEVOR 4-panel fabric divider, 5.6 ft, white",p:67.99,st:"out",r:"★4.2 (29) · VEVOR Shop CA",u:"https://www.walmart.ca/en/ip/VEVOR-Room-Divider-5-6-ft-Dividers-Folding-Privacy-Screens-4-panel-Fabric-Partition-Office-Bedroom-Dining-Room-Study-Freestanding-White/6TA1WO0NOG95"},
+  {n:"Costway 4-panel screen, 5.6 ft, white",p:207.99,st:"out",r:"★4.1 (8) · Goplus Corp",u:"https://www.walmart.ca/en/ip/Costway-4-Panel-Folding-Privacy-Room-Divider-Screen-Home-Furniture-5-6-Ft-Tall-White/PRD59OHK696KRTT"},
+  {n:"Costway 6-panel wood screen, white",p:327.99,st:"out",r:"★3.5 · Goplus Corp",u:"https://www.walmart.ca/en/ip/6-Panel-White-Room-Divider-Wood-Folding-Freestanding-Partition-Privacy-Screen/PRD5YJ6OJ132GQ8"},
+  {n:"All room dividers on Walmart.ca",p:null,st:null,r:"Browse the full category",u:"https://www.walmart.ca/en/browse/home/home-decor/room-dividers/10006_20070_30998"},
+];
+function renderWM(){
+  const lab={in:"In stock",out:"Out of stock",chk:"Check"};
+  document.getElementById('wm-list').innerHTML=WM.map(x=>`<li><a href="${x.u}" target="_blank" rel="noopener">${x.n}</a><b class="price">${x.p!=null?"$"+x.p.toFixed(2):"—"}</b><span>${x.st?`<i class="chip ${x.st}">${lab[x.st]}</i>`:""}${x.r}</span></li>`).join("");
+}
 function setBar(l,t,sub){document.getElementById('cb-label').textContent=l;document.getElementById('cb-total').textContent=t;document.getElementById('cb-sub').textContent=sub;}
 function renderCost(){
   // wall cards
@@ -629,7 +654,7 @@ addEventListener('hashchange',showTab);
 const bottomEl=document.getElementById('bottom');
 new ResizeObserver(()=>document.documentElement.style.setProperty('--footer-h',(bottomEl.offsetHeight+28)+'px')).observe(bottomEl);
 
-bg();buildRoom();syncAll();buildWall();view('p');showTab();resize();
+bg();buildRoom();renderWM();syncAll();buildWall();view('p');showTab();resize();
 (function loop(){requestAnimationFrame(loop);controls.update();renderer.render(scene,camera);})();
 })();
 </script>
