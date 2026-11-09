@@ -173,7 +173,7 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
   <div class="card">
     <h2>Suppliers</h2>
     <ul class="plain">
-      <li><a href="https://www.homedepot.ca" target="_blank" rel="noopener">The Home Depot Canada</a> — drywall, studs, door, handle, paint, insulation, trim, blinds, folding screens</li>
+      <li><a href="https://www.homedepot.ca" target="_blank" rel="noopener">The Home Depot Canada</a> — drywall, studs, door, handle, paint, insulation, trim, blinds</li>
       <li><a href="https://diyversify.com/en-ca/products/mounted-straight-partition-with-door" target="_blank" rel="noopener">Diyversify Canada</a> — ready-made wall kit</li>
       <li><a href="https://www.ikea.com/ca/en/cat/room-dividers-46080/f/white-room-dividers-f-colors--10156/" target="_blank" rel="noopener">IKEA Canada</a> — KALLAX shelving and cabinets</li>
       <li><a href="https://vevor.ca/office-room-divider-c_10909/vevor-office-partition-room-divider-102-x-71-3-panel-portable-privacy-screen-p_010485661587" target="_blank" rel="noopener">VEVOR Canada</a> — white panels on wheels</li>
@@ -199,15 +199,14 @@ nav.tabs a[aria-current=page]{color:var(--accent)}
 <script>
 (function(){
 const TYPES={
-  drywall:{name:"Build (drywall)",h:"full",color:0xf2f2f0,door:"slab",note:"Built like the existing office wall: steel studs, drywall both sides, same white paint and black base, white door and an interior window with blinds."},
-  kit:{name:"Ready-made kit",h:2.438,color:0xf7f7f5,door:"accordion",panels:0.61,note:"Diyversify 10′ × 8′ kit: panels in 2′ modules, screwed to the walls at each end, accordion door. Fits the 8′4″ ceiling with a 4″ (100 mm) gap on top."},
+  drywall:{name:"Drywall (Home Depot)",h:"full",color:0xf2f2f0,door:"slab",note:"Built like the existing office wall: steel studs, drywall both sides, same white paint and black base, white door and an interior window with blinds."},
+  kit:{name:"Wall kit (Diyversify)",h:2.438,color:0xf7f7f5,door:"accordion",panels:0.61,note:"Diyversify 10′ × 8′ kit: panels in 2′ modules, screwed to the walls at each end, accordion door. Fits the 8′4″ ceiling with a 4″ (100 mm) gap on top."},
   shelf:{name:"Shelving (IKEA)",free:true,note:"Two KALLAX shelf units, 1.47 m tall, standing on the floor. 1.1 m open walkway by the office."},
   cabinet:{name:"Cabinets (IKEA)",free:true,note:"KALLAX with 4 white doors plus a narrow KALLAX, 1.47 m tall. Closed, tidy storage on the corner side. 1.1 m open walkway."},
-  panels:{name:"Panels on wheels",free:true,note:"VEVOR 3-panel white partition on lockable wheels, 1.85 m tall. About 0.9 m open walkway."},
+  panels:{name:"Panels on wheels (VEVOR)",free:true,note:"VEVOR 3-panel white partition on lockable wheels, 1.85 m tall. About 0.9 m open walkway."},
   wm6ft:{name:"Wide screen (Walmart)",free:true,note:"Extra-wide double-hinged white folding screen, 6 ft (1.83 m) tall, folded in a tight zigzag. About 1.0 m open walkway."},
   wmsteel:{name:"Steel screen (Walmart)",free:true,note:"Costway 6-panel white screen with steel frame, about 10 ft long when open, folded to fit. Height not listed by the seller. About 1.3 m open walkway."},
-  screen6:{name:"6-panel screen",free:true,note:"HOMCOM 6-panel white folding screen, 1.70 m tall, set in a zigzag. About 1.0 m open walkway."},
-  screen:{name:"2 × 4-panel screens",free:true,note:"Two HOMCOM 4-panel white/grey folding screens, 1.71 m tall, set in a zigzag. About 1.0 m open walkway."},
+  screen6:{name:"6-panel screen (Staples)",free:true,note:"HOMCOM 6-panel white folding screen, 1.70 m tall, set in a zigzag. About 1.0 m open walkway."},
 };
 // existing room is fixed from the photos: corner 3.0 m wide x 2.4 m deep, ceiling 8'4" = 2.54 m (measured)
 let state={type:"drywall",len:3,pos:2.4,door:0.78,ceil:2.54,open:false,win:true};
@@ -504,24 +503,22 @@ const LEVERS={
 };
 const LEVER_URL=HD+"/en/home/categories/building-materials/hardware/door-hardware/door-handles-and-levers/f/defiant/3ogr-ooh";
 const WALLS={
-  drywall:{t:"Build it ourselves",s:"Drywall, matches existing walls"},
-  kit:{t:"Ready-made kit",s:"Diyversify Canada 10′ × 8′, accordion door, $3,101"},
+  drywall:{t:"Build it ourselves (Home Depot)",s:"Drywall, matches existing walls"},
+  kit:{t:"Ready-made wall kit (Diyversify)",s:"Diyversify Canada 10′ × 8′, accordion door, $3,101"},
 };
 const FREE={
-  shelf:{t:"Open shelving",s:"IKEA · KALLAX white, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/kallax-shelving-units-58285/",
+  shelf:{t:"Open shelving (IKEA)",s:"IKEA · KALLAX white, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/kallax-shelving-units-58285/",
     items:[{n:"KALLAX shelf unit, white, 147 × 147 cm",p:179.00,q:1},{n:"KALLAX shelf unit, white, 42 × 147 cm",p:69.99,q:1}]},
-  cabinet:{t:"Cabinets with doors",s:"IKEA · KALLAX white with 4 doors, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/room-dividers-46080/f/white-room-dividers-f-colors--10156/",
+  cabinet:{t:"Cabinets with doors (IKEA)",s:"IKEA · KALLAX white with 4 doors, 1.47 m tall",store:"IKEA Canada",url:"https://www.ikea.com/ca/en/cat/room-dividers-46080/f/white-room-dividers-f-colors--10156/",
     items:[{n:"KALLAX shelving unit with 4 doors, white, 147 × 147 cm",p:259.00,q:1},{n:"KALLAX shelf unit, white, 42 × 147 cm",p:69.99,q:1}]},
-  panels:{t:"Panels on wheels",s:"VEVOR · 3 white panels, 1.85 m tall",store:"VEVOR Canada",url:"https://vevor.ca/office-room-divider-c_10909/vevor-office-partition-room-divider-102-x-71-3-panel-portable-privacy-screen-p_010485661587",
+  panels:{t:"Panels on wheels (VEVOR)",s:"VEVOR · 3 white panels, 1.85 m tall",store:"VEVOR Canada",url:"https://vevor.ca/office-room-divider-c_10909/vevor-office-partition-room-divider-102-x-71-3-panel-portable-privacy-screen-p_010485661587",
     items:[{n:"VEVOR 3-panel office partition on wheels, white",p:98.99,q:1}]},
-  wm6ft:{t:"Extra-wide folding screen",s:"Walmart.ca · 6 ft tall · ★4.5 (24 reviews)",store:"Walmart.ca (seller: Gilberts Outlet, Pro Seller, fulfilled by Walmart)",short:"Walmart.ca",url:"https://www.walmart.ca/en/ip/Tall-Extra-Wide-Foldable-Panel-Partition-Wall-Divider-Double-Hinged-Room-and-Folding-Privacy-Screens-6-feet-White/4JTDA8G88MNO",
+  wm6ft:{t:"Extra-wide folding screen (Walmart)",s:"Walmart.ca · 6 ft tall · ★4.5 (24 reviews)",store:"Walmart.ca (seller: Gilberts Outlet, Pro Seller, fulfilled by Walmart)",short:"Walmart.ca",url:"https://www.walmart.ca/en/ip/Tall-Extra-Wide-Foldable-Panel-Partition-Wall-Divider-Double-Hinged-Room-and-Folding-Privacy-Screens-6-feet-White/4JTDA8G88MNO",
     items:[{n:"Tall extra-wide double-hinged folding screen, 6 ft, white",p:229.99,q:1}]},
-  wmsteel:{t:"Steel-frame folding screen",s:"Walmart.ca · Costway 6-panel · ★4.1 (10 reviews)",store:"Walmart.ca (seller: Goplus Corp / Costway, Pro Seller)",short:"Walmart.ca",url:"https://www.walmart.ca/en/ip/Costway-6-Panel-Room-Divider-Folding-Privacy-Screen-w-Steel-Frame-Decoration-White/PRD27JWFO9N5N2O",
+  wmsteel:{t:"Steel-frame folding screen (Walmart)",s:"Walmart.ca · Costway 6-panel · ★4.1 (10 reviews)",store:"Walmart.ca (seller: Goplus Corp / Costway, Pro Seller)",short:"Walmart.ca",url:"https://www.walmart.ca/en/ip/Costway-6-Panel-Room-Divider-Folding-Privacy-Screen-w-Steel-Frame-Decoration-White/PRD27JWFO9N5N2O",
     items:[{n:"Costway 6-panel room divider, steel frame, white",p:149.99,q:1}]},
-  screen6:{t:"6-panel folding screen",s:"Staples · HOMCOM white, 1.70 m tall",store:"Staples Canada",url:"https://www.staples.ca/products/3178501-en-homcom-6-panel-freestanding-room-divider-white",
+  screen6:{t:"6-panel folding screen (Staples)",s:"Staples · HOMCOM white, 1.70 m tall",store:"Staples Canada",url:"https://www.staples.ca/products/3178501-en-homcom-6-panel-freestanding-room-divider-white",
     items:[{n:"HOMCOM 6-panel freestanding room divider, white",p:189.99,q:1}]},
-  screen:{t:"2 × 4-panel folding screens",s:"Home Depot · HOMCOM white/grey, 1.71 m tall",store:"The Home Depot Canada",url:"https://www.homedepot.ca/product/homcom-5ft-4-panel-folding-room-divider-wall-privacy-screen-panels-white-grey/1001804873",
-    items:[{n:"HOMCOM 4-panel folding room divider, white/grey",p:141.00,q:2}]}
 };
 const TAX=0.12;
 let cost={door:"hollow",lever:"passage",ins:true,base:false};
@@ -544,16 +541,16 @@ function lines(){
   return L;
 }
 const WM=[
-  {n:"Tall extra-wide folding screen, 6 ft, white",p:229.99,st:"in",r:"★4.5 (24) · Gilberts Outlet, fulfilled by Walmart",u:"https://www.walmart.ca/en/ip/Tall-Extra-Wide-Foldable-Panel-Partition-Wall-Divider-Double-Hinged-Room-and-Folding-Privacy-Screens-6-feet-White/4JTDA8G88MNO"},
-  {n:"Costway 6-panel screen, steel frame, white",p:149.99,st:"in",r:"★4.1 (10) · Goplus Corp",u:"https://www.walmart.ca/en/ip/Costway-6-Panel-Room-Divider-Folding-Privacy-Screen-w-Steel-Frame-Decoration-White/PRD27JWFO9N5N2O"},
-  {n:"HOMCOM 6 ft 4-panel divider with shelves, white",p:109.99,st:"in",r:"Clearance · seller not shown",u:"https://www.walmart.ca/en/c/kp/room-divider-shelves"},
-  {n:"Costway 3-panel divider with shelves, on wheels",p:139.99,st:"chk",r:"★4.4 (55) · price shown for black, white swatch on page",u:"https://www.walmart.ca/en/c/kp/room-divider-shelves"},
-  {n:"FDW 4-panel shoji screen, 6 ft, white",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/FDW-Room-Divider-4-Panel-Oriental-Shoji-Screen-6Ft-Folding-Privacy-Wall-Portable-Freestanding-Partition-Japanese-Inspired-Wood-Divider-White/5IWU5EBXFHXI"},
-  {n:"67″ 6-panel wooden folding screen, white",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/67-6-Panel-Folding-Room-Divider-Privacy-Screen-Freestanding-Wooden-White/PRD7BFI7TYY4CAS"},
-  {n:"Costway 6-panel rolling screen, 6 ft, lockable wheels, white",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/Costway-6-Panel-Folding-Room-Divider-6FT-Rolling-Privacy-Screen-with-Lockable-Wheels-White/1B5MUNKN7MXE"},
-  {n:"VEVOR 4-panel fabric divider, 5.6 ft, white",p:67.99,st:"out",r:"★4.2 (29) · VEVOR Shop CA",u:"https://www.walmart.ca/en/ip/VEVOR-Room-Divider-5-6-ft-Dividers-Folding-Privacy-Screens-4-panel-Fabric-Partition-Office-Bedroom-Dining-Room-Study-Freestanding-White/6TA1WO0NOG95"},
-  {n:"Costway 4-panel screen, 5.6 ft, white",p:207.99,st:"out",r:"★4.1 (8) · Goplus Corp",u:"https://www.walmart.ca/en/ip/Costway-4-Panel-Folding-Privacy-Room-Divider-Screen-Home-Furniture-5-6-Ft-Tall-White/PRD59OHK696KRTT"},
-  {n:"Costway 6-panel wood screen, white",p:327.99,st:"out",r:"★3.5 · Goplus Corp",u:"https://www.walmart.ca/en/ip/6-Panel-White-Room-Divider-Wood-Folding-Freestanding-Partition-Privacy-Screen/PRD5YJ6OJ132GQ8"},
+  {n:"Tall extra-wide folding screen, 6 ft, white (Walmart)",p:229.99,st:"in",r:"★4.5 (24) · Gilberts Outlet, fulfilled by Walmart",u:"https://www.walmart.ca/en/ip/Tall-Extra-Wide-Foldable-Panel-Partition-Wall-Divider-Double-Hinged-Room-and-Folding-Privacy-Screens-6-feet-White/4JTDA8G88MNO"},
+  {n:"Costway 6-panel screen, steel frame, white (Walmart)",p:149.99,st:"in",r:"★4.1 (10) · Goplus Corp",u:"https://www.walmart.ca/en/ip/Costway-6-Panel-Room-Divider-Folding-Privacy-Screen-w-Steel-Frame-Decoration-White/PRD27JWFO9N5N2O"},
+  {n:"HOMCOM 6 ft 4-panel divider with shelves, white (Walmart)",p:109.99,st:"in",r:"Clearance · seller not shown",u:"https://www.walmart.ca/en/c/kp/room-divider-shelves"},
+  {n:"Costway 3-panel divider with shelves, on wheels (white option) (Walmart)",p:139.99,st:"chk",r:"★4.4 (55) · white option on page; price shown is for black",u:"https://www.walmart.ca/en/c/kp/room-divider-shelves"},
+  {n:"FDW 4-panel shoji screen, 6 ft, white (Walmart)",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/FDW-Room-Divider-4-Panel-Oriental-Shoji-Screen-6Ft-Folding-Privacy-Wall-Portable-Freestanding-Partition-Japanese-Inspired-Wood-Divider-White/5IWU5EBXFHXI"},
+  {n:"67″ 6-panel wooden folding screen, white (Walmart)",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/67-6-Panel-Folding-Room-Divider-Privacy-Screen-Freestanding-Wooden-White/PRD7BFI7TYY4CAS"},
+  {n:"Costway 6-panel rolling screen, 6 ft, lockable wheels, white (Walmart)",p:null,st:"chk",r:"Price on Walmart.ca",u:"https://www.walmart.ca/en/ip/Costway-6-Panel-Folding-Room-Divider-6FT-Rolling-Privacy-Screen-with-Lockable-Wheels-White/1B5MUNKN7MXE"},
+  {n:"VEVOR 4-panel fabric divider, 5.6 ft, white (Walmart)",p:67.99,st:"out",r:"★4.2 (29) · VEVOR Shop CA",u:"https://www.walmart.ca/en/ip/VEVOR-Room-Divider-5-6-ft-Dividers-Folding-Privacy-Screens-4-panel-Fabric-Partition-Office-Bedroom-Dining-Room-Study-Freestanding-White/6TA1WO0NOG95"},
+  {n:"Costway 4-panel screen, 5.6 ft, white (Walmart)",p:207.99,st:"out",r:"★4.1 (8) · Goplus Corp",u:"https://www.walmart.ca/en/ip/Costway-4-Panel-Folding-Privacy-Room-Divider-Screen-Home-Furniture-5-6-Ft-Tall-White/PRD59OHK696KRTT"},
+  {n:"Costway 6-panel wood screen, white (Walmart)",p:327.99,st:"out",r:"★3.5 · Goplus Corp",u:"https://www.walmart.ca/en/ip/6-Panel-White-Room-Divider-Wood-Folding-Freestanding-Partition-Privacy-Screen/PRD5YJ6OJ132GQ8"},
   {n:"All room dividers on Walmart.ca",p:null,st:null,r:"Browse the full category",u:"https://www.walmart.ca/en/browse/home/home-decor/room-dividers/10006_20070_30998"},
 ];
 function renderWM(){
@@ -587,11 +584,11 @@ function renderCost(){
     src.innerHTML=`Prices from <b>The Home Depot Canada</b>, Nov 6, 2026. Materials only, our crew installs.`;
     items.innerHTML=L.map(x=>`<li><a href="${x.u}" target="_blank" rel="noopener">${x.n}</a><b class="price">${fmt2(x.q*x.p)}</b><span>${x.q} × ${fmt2(x.p)}</span></li>`).join("");
     document.getElementById('itemsbox').hidden=false;
-    setBar('Material total, build it ourselves',fmt(sub+tax),'incl. GST + PST · Home Depot Canada'+(state.win?' · glass extra':''));
+    setBar('Build it ourselves (Home Depot)',fmt(sub+tax),'incl. GST + PST · Home Depot Canada'+(state.win?' · glass extra':''));
   } else if(state.type==="kit"){
     const sub=3101, tax=sub*TAX;
     document.getElementById('t-total').textContent=fmt(sub+tax);
-    setBar('Ready-made kit (Diyversify)',fmt(sub+tax),'incl. GST + PST · freight to BC extra');
+    setBar('Ready-made wall kit (Diyversify)',fmt(sub+tax),'incl. GST + PST · freight to BC extra');
     rows.innerHTML=`<span>Kit 10′ wide × 8′ high</span><span>${fmt2(sub)}</span><span>GST + PST 12%</span><span>${fmt2(tax)}</span><span>Freight to Richmond</span><span>quote</span>`;
     src.innerHTML=`CAD price from <a href="https://diyversify.com/en-ca/products/mounted-straight-partition-with-door" target="_blank" rel="noopener">Diyversify Canada</a>, Nov 6, 2026. Comes with an accordion door; a swing door is an extra accessory. No window option.`;
     document.getElementById('itemsbox').hidden=true;
@@ -602,7 +599,7 @@ function renderCost(){
     src.innerHTML=`Price from <a href="${f.url}" target="_blank" rel="noopener">${f.store}</a>, Nov 6, 2026, before delivery. Does not reach the ceiling.`;
     items.innerHTML=f.items.map(x=>`<li><a href="${f.url}" target="_blank" rel="noopener">${x.n}</a><b class="price">${fmt2(x.q*x.p)}</b><span>${x.q} × ${fmt2(x.p)}</span></li>`).join("");
     document.getElementById('itemsbox').hidden=false;
-    setBar(f.t+', no door',fmt(sub+tax),'incl. GST + PST · '+(f.short||f.store));
+    setBar(f.t,fmt(sub+tax),'incl. GST + PST · '+(f.short||f.store));
   }
 }
 
